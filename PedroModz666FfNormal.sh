@@ -1,7 +1,7 @@
 #!/system/bin/sh
 
 # --- CONFIGURACIÓN DE ACTUALIZACIÓN ONLINE ---
-VERSION_ACTUAL="1.3"
+VERSION_ACTUAL="1.4"
 URL_VERSION="https://raw.githubusercontent.com/Pedromora13/script-ff-normal/main/version.txt"
 URL_SCRIPT="https://raw.githubusercontent.com/Pedromora13/script-ff-normal/main/PedroModz666.sh"
 URL_KEYS="https://raw.githubusercontent.com/Pedromora13/script-ff-normal/main/keys.txt"
@@ -79,9 +79,9 @@ MAGENTA='\033[1;35m'
 RESET='\033[0m'
 
 # --- RUTAS DE ARCHIVOS Y DESTINO (Free Fire TH) ---
-FILE_ORI="/storage/emulated/0/PedroMod666/Ori/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
-FILE_PECHO="/storage/emulated/0/PedroMod666/Pecho/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
-FILE_CUELLO="/storage/emulated/0/PedroMod666/Cuello/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
+FILE_ORI="/storage/emulated/0/PedroModz666/Ori/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
+FILE_PECHO="/storage/emulated/0/PedroModz666/Pecho/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
+FILE_CUELLO="/storage/emulated/0/PedroModz666/Cuello/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
 
 DESTINO="/data/user/0/com.dts.freefireth/files/contentcache/Compulsory/android/gameassetbundles/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
 
@@ -143,13 +143,29 @@ while [ "$intentos" -lt "$INTENTOS_MAXIMOS" ]; do
     fi
 done
 
+# --- FUNCIÓN DE INFO DEL DISPOSITIVO ---
+obtener_info_dispositivo() {
+    MODELO=$(getprop ro.product.model 2>/dev/null || echo "Desconocido")
+    ANDROID_VER=$(getprop ro.build.version.release 2>/dev/null || echo "N/A")
+    if [ -d /data/adb/magisk ] || [ -f /system/bin/su ] || [ -f /system/xbin/su ]; then
+        ROOT_STATUS="${VERDE}Root [✔]${RESET}"
+    else
+        ROOT_STATUS="${AMARILLO}Sin Root${RESET}"
+    fi
+}
+
 # --- MENÚ PRINCIPAL ---
 while true; do
     clear
+    obtener_info_dispositivo
+
     printf "${AZUL}╔════════════════════════════════════════╗${RESET}\n"
     printf "${VERDE}            ⚡ PedroModz666 ⚡            \n"
     printf "${CYAN}        Soporte: +593 986520417          \n"
     printf "${AZUL}╚════════════════════════════════════════╝${RESET}\n"
+    printf "${AMARILLO} 📱 Celular:${RESET} $MODELO\n"
+    printf "${AMARILLO} 🤖 Android:${RESET} $ANDROID_VER | $ROOT_STATUS\n"
+    printf "${AZUL}════════════════════════════════════════${RESET}\n"
     printf "${AMARILLO}  [1]${RESET} 🚀 Bypass Avion\n"
     printf "${AMARILLO}  [2]${RESET} 🎯 Aimbot Pecho\n"
     printf "${AMARILLO}  [3]${RESET} 🎯 Aimbot Cuello\n"
@@ -162,7 +178,7 @@ while true; do
         1)
             if [ -f "$FILE_ORI" ]; then
                 printf "\n${CYAN}⏳ Inyectando Bypass en Free Fire TH...${RESET}\n"
-                cat "$FILE_ORI" > "$DESTINO"
+                cat "$FILE_ORI" > "$DESTINO" 2>/dev/null
                 printf "${VERDE}[✔] ¡Bypass Activado con éxito! Disfruta 🚀${RESET}\n"
             else
                 printf "\n${ROJO}[!] Error: No se encuentra el archivo en la ruta Ori/${RESET}\n"
@@ -171,7 +187,7 @@ while true; do
         2)
             if [ -f "$FILE_PECHO" ]; then
                 printf "\n${CYAN}⏳ Inyectando Aimbot Pecho...${RESET}\n"
-                cat "$FILE_PECHO" > "$DESTINO"
+                cat "$FILE_PECHO" > "$DESTINO" 2>/dev/null
                 printf "${VERDE}[✔] ¡Aimbot Pecho aplicado correctamente! 🔥${RESET}\n"
             else
                 printf "\n${ROJO}[!] Error: No se encuentra el archivo en Pecho/${RESET}\n"
@@ -180,7 +196,7 @@ while true; do
         3)
             if [ -f "$FILE_CUELLO" ]; then
                 printf "\n${CYAN}⏳ Inyectando Aimbot Cuello...${RESET}\n"
-                cat "$FILE_CUELLO" > "$DESTINO"
+                cat "$FILE_CUELLO" > "$DESTINO" 2>/dev/null
                 printf "${VERDE}[✔] ¡Aimbot Cuello aplicado correctamente! 🎯${RESET}\n"
             else
                 printf "\n${ROJO}[!] Error: No se encuentra el archivo en Cuello/${RESET}\n"
