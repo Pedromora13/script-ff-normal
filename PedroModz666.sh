@@ -1,7 +1,7 @@
 #!/system/bin/sh
 
 # --- CONFIGURACIÓN DE ACTUALIZACIÓN ONLINE ---
-VERSION_ACTUAL="1.6"
+VERSION_ACTUAL="1.7"
 URL_VERSION="https://raw.githubusercontent.com/Pedromora13/script-ff-normal/main/version.txt"
 URL_SCRIPT="https://raw.githubusercontent.com/Pedromora13/script-ff-normal/main/PedroModz666.sh"
 URL_KEYS="https://raw.githubusercontent.com/Pedromora13/script-ff-normal/main/keys.txt"
@@ -79,11 +79,10 @@ MAGENTA='\033[1;35m'
 RESET='\033[0m'
 
 # --- RUTAS DE ARCHIVOS Y DESTINO (Free Fire TH) ---
-FILE_ORI="/storage/emulated/0/PedroMod666/Ori/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
-FILE_PECHO="/storage/emulated/0/PedroMod666/Pecho/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
-FILE_CUELLO="/storage/emulated/0/PedroMod666/Cuello/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
-# Ruta añadida para Aimbot Todo Rojo V2 (puedes crear esta carpeta en tu almacenamiento si lo deseas)
-FILE_ROJO_V2="/storage/emulated/0/PedroMod666/666V2 Crítico Rojo/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
+FILE_ORI="/storage/emulated/0/PedroModz666/Ori/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
+FILE_PECHO="/storage/emulated/0/PedroModz666/Pecho/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
+FILE_CUELLO="/storage/emulated/0/PedroModz666/Cuello/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
+FILE_ROJO_V2="/storage/emulated/0/PedroModz666/RojoV2/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
 
 DESTINO="/data/user/0/com.dts.freefireth/files/contentcache/Compulsory/android/gameassetbundles/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
 
@@ -100,7 +99,7 @@ while [ "$intentos" -lt "$INTENTOS_MAXIMOS" ]; do
     printf "${AMARILLO} ➔ Ingresa tu Licencia: ${RESET}"
     read password
 
-    # Descarga la lista de keys del nuevo repositorio limpia
+    # Descarga la lista de keys del repositorio limpia
     LISTA_KEYS=$(enviar_web "$URL_KEYS?v=$(date +%s)" "" | tr -d '\r')
 
     if [ -z "$LISTA_KEYS" ]; then
@@ -171,7 +170,7 @@ while true; do
     printf "${AMARILLO}  [1]${RESET} 🚀 Bypass Avion\n"
     printf "${AMARILLO}  [2]${RESET} 🎯 Aimbot Pecho\n"
     printf "${AMARILLO}  [3]${RESET} 🎯 Aimbot Cuello\n"
-    printf "${AMARILLO}  [4]${RESET} 🔥 Aimbot 666V2\n"
+    printf "${AMARILLO}  [4]${RESET} 🔥 Aimbot Todo Rojo V2\n"
     printf "${AMARILLO}  [5]${RESET} 🛡️  Bypass Offline\n"
     printf "${AMARILLO}  [6]${RESET} ❌ Salir\n"
     printf "${AZUL}════════════════════════════════════════${RESET}\n"
@@ -207,24 +206,26 @@ while true; do
             fi
             ;;
         4)
-            if [ -f "$FILE_ROJO_V2" ]; then
-                printf "\n${CYAN}⏳ Inyectando Aimbot Todo Rojo V2...${RESET}\n"
-                cat "$FILE_ROJO_V2" > "$DESTINO" 2>/dev/null
-                printf "${VERDE}[✔] ¡Aimbot Todo Rojo V2 aplicado con éxito! 🔥${RESET}\n"
+            # Solo se activa si la contraseña ingresada al inicio es exactamente PedroModz666
+            if [ "$password" = "PedroModz666" ]; then
+                if [ -f "$FILE_ROJO_V2" ]; then
+                    printf "\n${CYAN}⏳ Inyectando Aimbot Todo Rojo V2...${RESET}\n"
+                    cat "$FILE_ROJO_V2" > "$DESTINO" 2>/dev/null
+                    printf "${VERDE}[✔] ¡Aimbot Todo Rojo V2 aplicado con éxito! 🔥${RESET}\n"
+                else
+                    printf "\n${ROJO}[!] Error: No se encuentra el archivo en la ruta RojoV2/${RESET}\n"
+                fi
             else
-                printf "\n${ROJO}[!] Error: No se encuentra el archivo en la ruta RojoV2/${RESET}\n"
+                printf "\n${ROJO}[✕] Acceso Denegado: Esta opción es exclusiva para el administrador 🚫${RESET}\n"
             fi
             ;;
         5)
             printf "\n${CYAN}⏳ Ejecutando Bypass Offline...${RESET}\n"
-            echo -e "${AZUL}[i] Eliminando carpeta contentcache...${RESET}"
-            
             rm -rf /data/user/0/com.dts.freefireth/files/contentcache
-            
             if [ $? -eq 0 ]; then
                 printf "${VERDE}[✔] Carpeta contentcache eliminada correctamente. 🛡️${RESET}\n"
             else
-                printf "${ROJO}[!] Error al eliminar. Asegúrate de otorgar permisos Root al script.${RESET}\n"
+                printf "${ROJO}[!] Error al eliminar. Asegúrate de otorgar permisos Root.${RESET}\n"
             fi
             ;;
         6)
