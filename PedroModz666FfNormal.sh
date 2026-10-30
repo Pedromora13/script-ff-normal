@@ -1,7 +1,7 @@
 #!/system/bin/sh
 
 # --- CONFIGURACIÓN DE ACTUALIZACIÓN ONLINE ---
-VERSION_ACTUAL="1.1"
+VERSION_ACTUAL="1.2"
 URL_VERSION="https://raw.githubusercontent.com/Pedromora13/script-ff-normal/main/version.txt"
 URL_SCRIPT="https://raw.githubusercontent.com/Pedromora13/script-ff-normal/main/PedroModz666.sh"
 URL_KEYS="https://raw.githubusercontent.com/Pedromora13/script-ff-normal/main/keys.txt"
