@@ -82,7 +82,7 @@ RESET='\033[0m'
 FILE_ORI="/storage/emulated/0/PedroMod666/Ori/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
 FILE_PECHO="/storage/emulated/0/PedroMod666/Pecho/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
 FILE_CUELLO="/storage/emulated/0/PedroMod666/Cuello/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
-FILE_ROJO_V2="/storage/emulated/0/PedroMod666/RojoV2/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
+FILE_ROJO_V2="/storage/emulated/0/PedroMod666/666V2 Crítico Rojo/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
 
 DESTINO="/data/user/0/com.dts.freefireth/files/contentcache/Compulsory/android/gameassetbundles/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
 
