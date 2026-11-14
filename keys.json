@@ -1,6 +1,5 @@
-{
-  "keys": [
-    { "key": "DEMO-VIP-001", "exp": "2025-12-31", "tipo": "vip" },
-    { "key": "DEMO-NOR-002", "exp": "2025-11-30", "tipo": "normal" }
-  ]
-}
+[
+  {"key":"DEMO-VIP-001","status":"active","expires":"2025-12-31","device":null},
+  {"key":"DEMO-NOR-002","status":"active","expires":"2025-11-30","device":null},
+  {"key":"PedroModz666","status":"active","expires":null,"device":null}
+]
