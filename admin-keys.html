@@ -1,367 +1,348 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔐 Admin Keys - PedroModz666</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #0a0a0a;
-            color: #fff;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-            min-height: 100vh;
-            padding: 20px;
-        }
-        .container { max-width: 500px; margin: 0 auto; }
-        h1 {
-            text-align: center;
-            color: #00d4ff;
-            text-shadow: 0 0 20px rgba(0,212,255,0.3);
-            margin-bottom: 8px;
-            font-size: 1.5em;
-        }
-        .subtitle {
-            text-align: center;
-            color: #888;
-            font-size: 0.85em;
-            margin-bottom: 25px;
-        }
-        .panel {
-            background: #141414;
-            border: 1px solid #222;
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 15px;
-        }
-        .panel h2 {
-            color: #00d4ff;
-            font-size: 0.95em;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        input[type="text"], input[type="password"] {
-            width: 100%;
-            padding: 14px 16px;
-            background: #0a0a0a;
-            border: 1px solid #333;
-            border-radius: 12px;
-            color: #fff;
-            font-size: 1em;
-            margin-bottom: 12px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-        input:focus { border-color: #00d4ff; }
-        button {
-            width: 100%;
-            padding: 14px;
-            background: #00d4ff;
-            color: #000;
-            border: none;
-            border-radius: 12px;
-            font-size: 1em;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        button:hover { background: #33ddff; transform: translateY(-1px); }
-        button:active { transform: scale(0.98); }
-        button.danger {
-            background: #ff4444;
-            color: #fff;
-        }
-        button.danger:hover { background: #ff6666; }
-        button.secondary {
-            background: #333;
-            color: #fff;
-        }
-        .key-list {
-            max-height: 300px;
-            overflow-y: auto;
-        }
-        .key-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 14px;
-            background: #0a0a0a;
-            border-radius: 10px;
-            margin-bottom: 8px;
-            border: 1px solid #222;
-        }
-        .key-name {
-            font-family: monospace;
-            font-size: 1.05em;
-            color: #00ff88;
-        }
-        .key-date {
-            font-size: 0.75em;
-            color: #666;
-            margin-top: 2px;
-        }
-        .btn-small {
-            width: auto;
-            padding: 8px 16px;
-            font-size: 0.8em;
-            border-radius: 8px;
-        }
-        .empty {
-            text-align: center;
-            color: #555;
-            padding: 30px;
-        }
-        .status {
-            padding: 12px 16px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            font-size: 0.9em;
-            display: none;
-        }
-        .status.show { display: block; }
-        .status.ok { background: #0a3320; color: #00ff88; border: 1px solid #1a5c3a; }
-        .status.err { background: #331010; color: #ff6666; border: 1px solid #5c1a1a; }
-        .status.info { background: #0a2033; color: #66bbff; border: 1px solid #1a3a5c; }
-        .hidden { display: none !important; }
-        .login-screen { text-align: center; padding-top: 60px; }
-        .login-screen .panel { margin-top: 30px; }
-        .stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .stat-box {
-            background: #0a0a0a;
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            border: 1px solid #222;
-        }
-        .stat-num {
-            font-size: 1.8em;
-            font-weight: 800;
-            color: #00d4ff;
-        }
-        .stat-label {
-            font-size: 0.75em;
-            color: #888;
-            margin-top: 4px;
-        }
-        .token-hint {
-            font-size: 0.8em;
-            color: #666;
-            margin-top: 8px;
-            line-height: 1.5;
-        }
-        .token-hint a { color: #00d4ff; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #0a0a0a; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Keys · PedroModz666</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fondo:#0d0e0e;
+  --panel:#151717;
+  --linea:#262a2a;
+  --texto:#e8ecea;
+  --tenue:#8d9794;
+  --acento:#2fd6b8;
+  --alerta:#ff5d5d;
+  --ok:#2fd6b8;
+  --esp:8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{
+  background:var(--fondo);color:var(--texto);
+  font-family:'Archivo',system-ui,sans-serif;
+  font-size:16px;line-height:1.5;
+  padding:calc(var(--esp)*3) calc(var(--esp)*2) 80px;
+  max-width:680px;margin:0 auto;
+}
+h1{font-size:1.55rem;font-weight:800;letter-spacing:-.02em}
+h2{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--tenue);margin-bottom:calc(var(--esp)*1.5)}
+code,.mono{font-family:'JetBrains Mono',monospace}
+.cabecera{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--esp);margin-bottom:calc(var(--esp)*3)}
+.cabecera p{font-size:.8rem;color:var(--tenue);margin-top:2px}
+#salir{background:none;border:1px solid var(--linea);color:var(--tenue);font-family:inherit;font-size:.75rem;padding:6px 12px;border-radius:999px;cursor:pointer}
+#salir:hover{color:var(--alerta);border-color:var(--alerta)}
+.panel{background:var(--panel);border:1px solid var(--linea);border-radius:14px;padding:calc(var(--esp)*2);margin-bottom:calc(var(--esp)*2)}
+label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--tenue);margin-bottom:6px}
+input,select{
+  width:100%;background:#0a0b0b;border:1px solid var(--linea);color:var(--texto);
+  font-family:'JetBrains Mono',monospace;font-size:.9rem;
+  padding:11px 13px;border-radius:9px;margin-bottom:calc(var(--esp)*1.5);
+}
+input:focus,select:focus{outline:none;border-color:var(--acento)}
+button{font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;border-radius:9px;border:none}
+.principal{width:100%;background:var(--acento);color:#04211c;padding:13px}
+.principal:active{transform:scale(.99)}
+.fila{display:flex;gap:var(--esp);flex-wrap:wrap}
+.fila>*{flex:1 1 140px}
+.resumen{display:flex;gap:var(--esp);margin-bottom:calc(var(--esp)*2)}
+.resumen div{background:var(--panel);border:1px solid var(--linea);border-radius:12px;padding:calc(var(--esp)*1.5);flex:1}
+.resumen .num{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700;color:var(--acento)}
+.resumen .et{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--tenue)}
+.key{
+  background:var(--panel);border:1px solid var(--linea);border-left:3px solid var(--acento);
+  border-radius:11px;padding:calc(var(--esp)*1.5);margin-bottom:var(--esp);
+  display:flex;justify-content:space-between;align-items:center;gap:var(--esp);
+}
+.key.off{border-left-color:#4a5250;opacity:.62}
+.key .n{font-family:'JetBrains Mono',monospace;font-size:.92rem;word-break:break-all}
+.key .d{font-size:.7rem;color:var(--tenue);margin-top:3px}
+.acciones{display:flex;gap:6px;flex-shrink:0}
+.acciones button{background:#0a0b0b;border:1px solid var(--linea);color:var(--tenue);padding:7px 10px;font-size:.72rem;border-radius:7px}
+.acciones button:hover{color:var(--texto);border-color:var(--acento)}
+.acciones .borrar:hover{color:var(--alerta);border-color:var(--alerta)}
+.vacio{text-align:center;color:var(--tenue);font-size:.85rem;padding:calc(var(--esp)*4) 0}
+#aviso{
+  position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);
+  background:#04211c;color:var(--acento);border:1px solid var(--acento);
+  font-size:.82rem;padding:10px 18px;border-radius:999px;
+  opacity:0;pointer-events:none;transition:.22s;max-width:92vw;
+}
+#aviso.mal{background:#2a0f0f;color:var(--alerta);border-color:var(--alerta)}
+#aviso.ver{opacity:1;transform:translate(-50%,0)}
+.oculto{display:none!important}
+.pista{font-size:.72rem;color:var(--tenue);margin-top:4px;line-height:1.45}
+.pista a{color:var(--acento)}
+@media(min-width:560px){
+  .key{flex-wrap:nowrap}
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <!-- LOGIN -->
-        <div id="loginScreen" class="login-screen">
-            <h1>🔐 PANEL ADMIN</h1>
-            <p class="subtitle">PedroModz666 - Gestión de Keys</p>
-            <div class="panel">
-                <h2>🔑 Token de GitHub</h2>
-                <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx">
-                <button onclick="login()">Acceder al Panel</button>
-                <p class="token-hint">
-                    Necesitas un token con permiso <code>repo</code>.<br>
-                    Crealo en: <a href="https://github.com/settings/tokens" target="_blank">github.com/settings/tokens</a>
-                </p>
-            </div>
-        </div>
 
-        <!-- PANEL PRINCIPAL -->
-        <div id="mainScreen" class="hidden">
-            <h1>🔐 PANEL ADMIN</h1>
-            <p class="subtitle" id="userDisplay">Cargando...</p>
-            
-            <div id="statusBox" class="status"></div>
+<div class="cabecera">
+  <div>
+    <h1>Keys</h1>
+    <p id="quien" class="mono">sin sesión</p>
+  </div>
+  <button id="salir" class="oculto" onclick="salir()">Cerrar sesión</button>
+</div>
 
-            <div class="stats">
-                <div class="stat-box">
-                    <div class="stat-num" id="totalKeys">0</div>
-                    <div class="stat-label">Keys activas</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-num" id="adminKey">—</div>
-                    <div class="stat-label">Key maestra</div>
-                </div>
-            </div>
+<section id="login" class="panel">
+  <h2>Entrar</h2>
+  <label for="tok">Token de GitHub</label>
+  <input id="tok" type="password" placeholder="ghp_..." autocomplete="off" spellcheck="false">
+  <button class="principal" onclick="entrar()">Conectar con GitHub</button>
+  <p class="pista">Necesita permiso <code>repo</code> sobre <code>Pedromora13/script-ff-normal</code>. Se crea en <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">github.com/settings/tokens</a>.</p>
+</section>
 
-            <div class="panel">
-                <h2>➕ Nueva Key</h2>
-                <input type="text" id="newKey" placeholder="Nombre de la key (ej: Caleb6)">
-                <button onclick="addKey()">Agregar Key</button>
-            </div>
+<main id="app" class="oculto">
+  <div class="resumen">
+    <div><div class="num" id="nActivas">0</div><div class="et">activas</div></div>
+    <div><div class="num" id="nTotal">0</div><div class="et">en total</div></div>
+    <div><div class="num" id="nMaestra">—</div><div class="et">maestra</div></div>
+  </div>
 
-            <div class="panel">
-                <h2>📋 Keys Activas</h2>
-                <div class="key-list" id="keyList">
-                    <div class="empty">Cargando...</div>
-                </div>
-            </div>
-
-            <div class="panel">
-                <button class="secondary" onclick="logout()">Cerrar Sesión</button>
-            </div>
-        </div>
+  <section class="panel">
+    <h2>Nueva key</h2>
+    <label for="nueva">Nombre</label>
+    <input id="nueva" placeholder="Caleb7" autocomplete="off" spellcheck="false">
+    <div class="fila">
+      <div>
+        <label for="vence">Vence (opcional)</label>
+        <input id="vence" type="date">
+      </div>
+      <div>
+        <label for="estado">Estado</label>
+        <select id="estado"><option value="active">activa</option><option value="inactive">inactiva</option></select>
+      </div>
     </div>
+    <button class="principal" onclick="crear()">Crear y guardar en keys.txt</button>
+  </section>
 
-    <script>
-        const REPO = 'Pedromora13/script-ff-normal';
-        const FILE_PATH = 'keys.txt';
-        let token = '';
-        let currentSha = '';
-        let keys = [];
+  <h2>Registradas <span id="cargando" class="mono" style="text-transform:none;letter-spacing:0"></span></h2>
+  <div id="lista"></div>
+</main>
 
-        function showStatus(msg, type) {
-            const box = document.getElementById('statusBox');
-            box.textContent = msg;
-            box.className = 'status show ' + type;
-            setTimeout(() => box.className = 'status', 4000);
-        }
+<div id="aviso"></div>
 
-        async function githubApi(method, path, body) {
-            const opts = {
-                method,
-                headers: {
-                    'Authorization': 'token ' + token,
-                    'Accept': 'application/vnd.github.v3+json',
-                    'Content-Type': 'application/json'
-                }
-            };
-            if (body) opts.body = JSON.stringify(body);
-            const res = await fetch('https://api.github.com' + path, opts);
-            if (!res.ok) {
-                const err = await res.json().catch(() => ({}));
-                throw new Error(err.message || 'Error HTTP ' + res.status);
-            }
-            return res.status === 204 ? null : res.json();
-        }
+<script>
+const REPO = 'Pedromora13/script-ff-normal';
+const ARCHIVO = 'keys.txt';
+const MAESTRA = 'PedroModz666';
 
-        async function login() {
-            token = document.getElementById('tokenInput').value.trim();
-            if (!token) return showStatus('Ingresa un token', 'err');
-            
-            try {
-                const user = await githubApi('GET', '/user');
-                document.getElementById('userDisplay').textContent = '@' + user.login;
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('mainScreen').classList.remove('hidden');
-                await loadKeys();
-            } catch (e) {
-                showStatus('Token inválido: ' + e.message, 'err');
-            }
-        }
+let token = sessionStorage.getItem('tk') || '';
+let sha = '';
+let keys = [];
 
-        function logout() {
-            token = '';
-            currentSha = '';
-            keys = [];
-            document.getElementById('tokenInput').value = '';
-            document.getElementById('mainScreen').classList.add('hidden');
-            document.getElementById('loginScreen').classList.remove('hidden');
-        }
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-        async function loadKeys() {
-            try {
-                const file = await githubApi('GET', `/repos/${REPO}/contents/${FILE_PATH}`);
-                currentSha = file.sha;
-                const content = atob(file.content.replace(/\n/g, ''));
-                keys = content.split('\n').map(k => k.trim()).filter(k => k);
-                
-                document.getElementById('totalKeys').textContent = keys.length;
-                const hasAdmin = keys.includes('PedroModz666');
-                document.getElementById('adminKey').textContent = hasAdmin ? '✓' : '✗';
-                if (!hasAdmin) showStatus('¡Falta la key maestra PedroModz666!', 'err');
-                
-                renderKeys();
-            } catch (e) {
-                showStatus('Error cargando keys: ' + e.message, 'err');
-            }
-        }
+function avisar(msg, mal) {
+  const a = $('aviso');
+  a.textContent = msg;
+  a.className = 'ver' + (mal ? ' mal' : '');
+  clearTimeout(a._t);
+  a._t = setTimeout(() => a.className = '', 3200);
+}
 
-        function renderKeys() {
-            const list = document.getElementById('keyList');
-            if (!keys.length) {
-                list.innerHTML = '<div class="empty">No hay keys registradas</div>';
-                return;
-            }
-            list.innerHTML = keys.map((k, i) => `
-                <div class="key-item">
-                    <div>
-                        <div class="key-name">${escapeHtml(k)}</div>
-                        ${k === 'PedroModz666' ? '<div class="key-date">🔥 Key maestra</div>' : ''}
-                    </div>
-                    <button class="danger btn-small" onclick="deleteKey(${i})">Eliminar</button>
-                </div>
-            `).join('');
-        }
+async function gh(metodo, ruta, cuerpo) {
+  const opciones = {
+    method: metodo,
+    headers: {
+      'Authorization': 'token ' + token,
+      'Accept': 'application/vnd.github.v3+json',
+      'Content-Type': 'application/json'
+    }
+  };
+  if (cuerpo) opciones.body = JSON.stringify(cuerpo);
+  const r = await fetch('https://api.github.com' + ruta, opciones);
+  if (!r.ok) {
+    let detalle = 'HTTP ' + r.status;
+    try { detalle = (await r.json()).message || detalle; } catch (e) {}
+    if (r.status === 401) detalle = 'token inválido o vencido';
+    if (r.status === 404) detalle = 'no encontrado o sin permiso sobre el repo';
+    throw new Error(detalle);
+  }
+  return r.status === 204 ? null : r.json();
+}
 
-        function escapeHtml(t) {
-            return t.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[c]));
-        }
+function aBase64(texto) {
+  const bytes = new TextEncoder().encode(texto);
+  let bin = '';
+  bytes.forEach(b => bin += String.fromCharCode(b));
+  return btoa(bin);
+}
+function deBase64(b64) {
+  const bin = atob(b64.replace(/\s/g, ''));
+  const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+  return new TextDecoder().decode(bytes);
+}
 
-        async function saveKeys() {
-            const content = btoa(keys.join('\n') + (keys.length ? '\n' : ''));
-            await githubApi('PUT', `/repos/${REPO}/contents/${FILE_PATH}`, {
-                message: 'Actualizar keys desde panel admin',
-                content: content,
-                sha: currentSha
-            });
-        }
+async function entrar() {
+  const t = $('tok').value.trim();
+  if (!t) return avisar('Pega el token primero', true);
+  token = t;
+  $('quien').textContent = 'conectando...';
+  try {
+    const u = await gh('GET', '/user');
+    $('quien').textContent = '@' + u.login;
+    sessionStorage.setItem('tk', token);
+    $('login').classList.add('oculto');
+    $('app').classList.remove('oculto');
+    $('salir').classList.remove('oculto');
+    await cargar();
+  } catch (e) {
+    token = '';
+    sessionStorage.removeItem('tk');
+    $('quien').textContent = 'sin sesión';
+    avisar('No entró: ' + e.message, true);
+  }
+}
 
-        async function addKey() {
-            const input = document.getElementById('newKey');
-            const key = input.value.trim();
-            if (!key) return showStatus('Ingresa una key', 'err');
-            if (keys.includes(key)) return showStatus('Esa key ya existe', 'err');
-            if (!/^[a-zA-Z0-9_-]+$/.test(key)) return showStatus('Solo letras, números, guiones y guiones bajos', 'err');
-            
-            try {
-                keys.push(key);
-                await saveKeys();
-                input.value = '';
-                await loadKeys();
-                showStatus('Key agregada: ' + key, 'ok');
-            } catch (e) {
-                keys.pop();
-                showStatus('Error guardando: ' + e.message, 'err');
-            }
-        }
+function salir() {
+  token = ''; sha = ''; keys = [];
+  sessionStorage.removeItem('tk');
+  $('tok').value = '';
+  $('app').classList.add('oculto');
+  $('login').classList.remove('oculto');
+  $('salir').classList.add('oculto');
+  $('quien').textContent = 'sin sesión';
+}
 
-        async function deleteKey(index) {
-            const key = keys[index];
-            if (!confirm('¿Eliminar key "' + key + '"?')) return;
-            
-            try {
-                keys.splice(index, 1);
-                await saveKeys();
-                await loadKeys();
-                showStatus('Key eliminada', 'ok');
-            } catch (e) {
-                await loadKeys();
-                showStatus('Error eliminando: ' + e.message, 'err');
-            }
-        }
+function leer(texto) {
+  const limpio = texto.trim();
+  if (!limpio) return [];
+  try {
+    const dato = JSON.parse(limpio);
+    if (Array.isArray(dato)) {
+      return dato.map(o => typeof o === 'string'
+        ? { key: o, status: 'active', expires: null }
+        : { key: o.key, status: o.status || 'active', expires: o.expires || null });
+    }
+  } catch (e) {}
+  return limpio.split('\n').map(l => l.trim()).filter(l => l && l !== '[' && l !== ']')
+    .map(l => l.replace(/,$/, ''))
+    .map(l => {
+      try { const o = JSON.parse(l); return { key: o.key, status: o.status || 'active', expires: o.expires || null }; }
+      catch (e) { return { key: l.replace(/^"|"$/g, ''), status: 'active', expires: null }; }
+    });
+}
 
-        // Auto-login si hay token guardado
-        const saved = localStorage.getItem('gh_token');
-        if (saved) {
-            document.getElementById('tokenInput').value = saved;
-        }
-        document.getElementById('tokenInput').addEventListener('change', e => {
-            localStorage.setItem('gh_token', e.target.value);
-        });
-    </script>
+function escribir() {
+  const lineas = keys.map(k =>
+    '{"key":"' + k.key.replace(/\\/g, '\\\\').replace(/"/g, '\\"') +
+    '","status":"' + (k.status || 'active') +
+    '","device":null,"expires":' + (k.expires ? '"' + k.expires + '"' : 'null') + '}'
+  );
+  return '[\n' + lineas.join(',\n') + '\n]\n';
+}
+
+async function cargar() {
+  $('cargando').textContent = 'cargando…';
+  try {
+    const f = await gh('GET', `/repos/${REPO}/contents/${ARCHIVO}`);
+    sha = f.sha;
+    keys = leer(deBase64(f.content));
+    pintar();
+  } catch (e) {
+    $('cargando').textContent = '';
+    avisar('No pude leer keys.txt: ' + e.message, true);
+  }
+}
+
+function pintar() {
+  $('cargando').textContent = '';
+  $('nTotal').textContent = keys.length;
+  $('nActivas').textContent = keys.filter(k => k.status === 'active').length;
+  $('nMaestra').textContent = keys.some(k => k.key === MAESTRA) ? 'sí' : 'falta';
+
+  const lista = $('lista');
+  if (!keys.length) {
+    lista.innerHTML = '<div class="vacio">Todavía no hay keys guardadas.</div>';
+    return;
+  }
+  lista.innerHTML = keys.map((k, i) => {
+    const activa = k.status === 'active';
+    const vence = k.expires ? ' · vence ' + esc(k.expires) : '';
+    return `<div class="key ${activa ? '' : 'off'}">
+      <div>
+        <div class="n">${esc(k.key)}</div>
+        <div class="d">${activa ? 'activa' : 'inactiva'}${vence}</div>
+      </div>
+      <div class="acciones">
+        <button onclick="alternar(${i})">${activa ? 'apagar' : 'activar'}</button>
+        <button onclick="renombrar(${i})">editar</button>
+        <button class="borrar" onclick="borrar(${i})">borrar</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function guardar(textoOk) {
+  try {
+    const r = await gh('PUT', `/repos/${REPO}/contents/${ARCHIVO}`, {
+      message: textoOk,
+      content: aBase64(escribir()),
+      sha: sha
+    });
+    sha = r.content.sha;
+    pintar();
+    avisar('Guardado en GitHub');
+  } catch (e) {
+    avisar('No se guardó: ' + e.message, true);
+    await cargar();
+  }
+}
+
+async function crear() {
+  const nombre = $('nueva').value.trim();
+  if (!nombre) return avisar('Escribe el nombre de la key', true);
+  if (/["\\\n]/.test(nombre)) return avisar('Sin comillas ni saltos de línea', true);
+  if (keys.some(k => k.key.toLowerCase() === nombre.toLowerCase())) return avisar('Esa key ya existe', true);
+  keys.push({ key: nombre, status: $('estado').value, expires: $('vence').value || null });
+  $('nueva').value = '';
+  $('vence').value = '';
+  await guardar('alta de key ' + nombre);
+  avisar('Key ' + nombre + ' creada');
+}
+
+async function alternar(i) {
+  keys[i].status = keys[i].status === 'active' ? 'inactive' : 'active';
+  pintar();
+  await guardar((keys[i].status === 'active' ? 'activo' : 'desactivo') + ' key ' + keys[i].key);
+}
+
+async function renombrar(i) {
+  const actual = keys[i].key;
+  const nuevo = prompt('Nombre de la key', actual);
+  if (nuevo === null) return;
+  const limpio = nuevo.trim();
+  if (!limpio || /["\\\n]/.test(limpio)) return avisar('Nombre no válido', true);
+  if (keys.some((k, j) => j !== i && k.key.toLowerCase() === limpio.toLowerCase())) return avisar('Ese nombre ya está usado', true);
+  const vence = prompt('Vence (AAAA-MM-DD, vacío = nunca)', keys[i].expires || '');
+  if (vence === null) return;
+  keys[i].key = limpio;
+  keys[i].expires = vence.trim() || null;
+  pintar();
+  await guardar('edito key ' + actual + ' → ' + limpio);
+}
+
+async function borrar(i) {
+  if (!confirm('¿Borrar la key ' + keys[i].key + '?')) return;
+  const quitada = keys[i].key;
+  keys.splice(i, 1);
+  pintar();
+  await guardar('borro key ' + quitada);
+  avisar('Key ' + quitada + ' borrada');
+}
+
+if (token) {
+  $('tok').value = token;
+  entrar();
+}
+</script>
 </body>
 </html>
