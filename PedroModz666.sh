@@ -1,7 +1,7 @@
 #!/system/bin/sh
 
 # --- CONFIGURACIÓN DE ACTUALIZACIÓN ONLINE ---
-VERSION_ACTUAL="1.5"
+VERSION_ACTUAL="1.7"
 URL_VERSION="https://raw.githubusercontent.com/Pedromora13/script-ff-normal/main/version.txt"
 URL_SCRIPT="https://raw.githubusercontent.com/Pedromora13/script-ff-normal/main/PedroModz666.sh"
 URL_KEYS="https://raw.githubusercontent.com/Pedromora13/script-ff-normal/main/keys.txt"
@@ -99,7 +99,7 @@ while [ "$intentos" -lt "$INTENTOS_MAXIMOS" ]; do
     printf "${AMARILLO} ➔ Ingresa tu Licencia: ${RESET}"
     read password
 
-    # Descarga la lista de keys del repositorio limpia
+    # Descarga la lista de keys del repositorio en formato JSON
     LISTA_KEYS=$(enviar_web "$URL_KEYS?v=$(date +%s)" "" | tr -d '\r')
 
     if [ -z "$LISTA_KEYS" ]; then
@@ -107,10 +107,13 @@ while [ "$intentos" -lt "$INTENTOS_MAXIMOS" ]; do
         exit 1
     fi
     
-    # Busca si la key existe exacta en alguna línea
-    LINEA_MATCH=$(echo "$LISTA_KEYS" | grep -E "^${password}(\\||$)" | head -n 1)
+    # Parser JSON simple: busca la key y extrae su status
+    # Formato esperado: {"key":"NOMBRE","status":"active",...}
+    KEY_ESCAPED=$(echo "$password" | sed 's/[]\/$*.^|[]/\\&/g')
+    LINEA_MATCH=$(echo "$LISTA_KEYS" | grep -o "\"key\":\"$KEY_ESCAPED\"[^}]*" | head -n 1)
+    STATUS_KEY=$(echo "$LINEA_MATCH" | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
 
-    if [ -n "$password" ] && [ -n "$LINEA_MATCH" ]; then
+    if [ -n "$password" ] && [ -n "$LINEA_MATCH" ] && [ "$STATUS_KEY" = "active" ]; then
         # Notificación a Telegram indicando el uso de la key correcta
         MSG_TG="👀 SCRIPT FF NORMAL:\nKey correcta usada: $password"
         enviar_web "https://api.telegram.org/bot$TOKEN_BOT/sendMessage" "chat_id=$TU_CHAT_ID&text=$MSG_TG" > /dev/null 2>&1
