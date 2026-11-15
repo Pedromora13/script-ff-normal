@@ -16,9 +16,9 @@ enviar_web() {
 
     if [ -n "$_curl" ]; then
         if [ -n "$data" ]; then
-            "$_curl" -s -X POST "$url" -d "$data"
+            "$_curl" -s --max-time 5 -X POST "$url" -d "$data"
         else
-            "$_curl" -s "$url"
+            "$_curl" -s --max-time 5 "$url"
         fi
         return 0
     fi
@@ -31,9 +31,9 @@ enviar_web() {
 
     if [ -n "$_wget" ]; then
         if [ -n "$data" ]; then
-            "$_wget" -qO- --post-data="$data" "$url"
+            "$_wget" -qO- --timeout=5 --post-data="$data" "$url"
         else
-            "$_wget" -qO- "$url"
+            "$_wget" -qO- --timeout=5 "$url"
         fi
         return 0
     fi
@@ -50,9 +50,9 @@ enviar_web() {
 
     if [ -n "$_bb" ]; then
         if [ -n "$data" ]; then
-            "$_bb" wget -qO- --post-data="$data" "$url"
+            "$_bb" wget -qO- --timeout=5 --post-data="$data" "$url"
         else
-            "$_bb" wget -qO- "$url"
+            "$_bb" wget -qO- --timeout=5 "$url"
         fi
         return 0
     fi
@@ -101,11 +101,11 @@ while [ "$intentos" -lt "$INTENTOS_MAXIMOS" ]; do
         continue
     fi
 
-    # Consultar la key específica en Firebase
+    # Consultar la key específica en Firebase con límite de tiempo
     RESPUESTA_FB=$(enviar_web "$URL_FIREBASE/$password_limpia.json" "")
 
     if [ -z "$RESPUESTA_FB" ]; then
-        printf "\n${ROJO}[!] Error: No hay conexión a internet o al servidor.${RESET}\n"
+        printf "\n${ROJO}[!] Error: No hay conexión a internet o el servidor tardó mucho en responder.${RESET}\n"
         exit 1
     fi
 
