@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PedroModz666 | Key Manager (Firebase)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen p-6 font-sans">
+    <div class="max-w-4xl mx-auto">
+        <header class="flex justify-between items-center border-b border-slate-800 pb-4 mb-6">
+            <div>
+                <h1 class="text-2xl font-bold text-emerald-400">PedroModz666 — KeyVault</h1>
+                <p class="text-xs text-slate-400">Conectado a Firebase Realtime Database</p>
+            </div>
+            <span id="status-badge" class="px-3 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                Sincronizando...
+            </span>
+        </header>
+
+        <!-- Formulario para crear Key -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+                <label class="block text-xs text-slate-400 mb-1">Nombre / Key</label>
+                <input id="input-key" type="text" placeholder="Ej: PEDRO-VIP-2026" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
+            </div>
+            <div>
+                <label class="block text-xs text-slate-400 mb-1">Cliente / Nota</label>
+                <input id="input-note" type="text" placeholder="Ej: Juan Pérez" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
+            </div>
+            <div>
+                <label class="block text-xs text-slate-400 mb-1">Duración (Días)</label>
+                <select id="input-days" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
+                    <option value="1">1 Día</option>
+                    <option value="7">7 Días</option>
+                    <option value="30" selected>30 Días</option>
+                    <option value="9999">Lifetime (Permanente)</option>
+                </select>
+            </div>
+            <div class="flex items-end gap-2">
+                <button onclick="generarAleatoria()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-lg text-sm transition" title="Generar código">🎲</button>
+                <button onclick="crearKey()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 px-4 rounded-lg text-sm transition">
+                    + Crear Key
+                </button>
+            </div>
+        </div>
+
+        <!-- Tabla de Keys -->
+        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-slate-800/50 text-slate-400 text-xs uppercase">
+                        <th class="p-4">Licencia</th>
+                        <th class="p-4">Cliente</th>
+                        <th class="p-4">Expira</th>
+                        <th class="p-4">Estado</th>
+                        <th class="p-4 text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="keys-table" class="divide-y divide-slate-800 text-sm">
+                    <tr><td colspan="5" class="p-6 text-center text-slate-500">Cargando claves...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const DB_URL = "https://pedromodz-keys-default-rtdb.firebaseio.com/keys";
+
+        function generarAleatoria() {
+            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+            let res = "PM666-";
+            for (let i = 0; i < 6; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
+            document.getElementById("input-key").value = res;
+        }
+
+        async function cargarKeys() {
+            const badge = document.getElementById("status-badge");
+            try {
+                const res = await fetch(`${DB_URL}.json`);
+                const data = await res.json();
+                renderTabla(data || {});
+                badge.textContent = "En línea";
+                badge.className = "px-3 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
+            } catch (e) {
+                badge.textContent = "Error de conexión";
+                badge.className = "px-3 py-1 text-xs rounded-full bg-red-500/10 text-red-400 border border-red-500/30";
+            }
+        }
+
+        async function crearKey() {
+            const key = document.getElementById("input-key").value.trim().replace(/[.#$\[\]\/]/g, "");
+            const note = document.getElementById("input-note").value.trim() || "Sin nota";
+            const days = parseInt(document.getElementById("input-days").value);
+
+            if (!key) return alert("Escribe o genera una key primero.");
+
+            const now = Math.floor(Date.now() / 1000);
+            const expires = days === 9999 ? 0 : now + (days * 86400);
+
+            const payload = {
+                status: "active",
+                note: note,
+                expires: expires
+            };
+
+            await fetch(`${DB_URL}/${key}.json`, {
+                method: "PUT",
+                body: JSON.stringify(payload)
+            });
+
+            document.getElementById("input-key").value = "";
+            document.getElementById("input-note").value = "";
+            cargarKeys();
+        }
+
+        async function toggleEstado(key, estadoActual) {
+            const nuevoEstado = estadoActual === "active" ? "banned" : "active";
+            await fetch(`${DB_URL}/${key}/status.json`, {
+                method: "PUT",
+                body: JSON.stringify(nuevoEstado)
+            });
+            cargarKeys();
+        }
+
+        async function eliminarKey(key) {
+            if (!confirm(`¿Eliminar permanentemente la key ${key}?`)) return;
+            await fetch(`${DB_URL}/${key}.json`, { method: "DELETE" });
+            cargarKeys();
+        }
+
+        function renderTabla(data) {
+            const tbody = document.getElementById("keys-table");
+            const keys = Object.keys(data);
+            if (keys.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">No hay keys creadas todavía.</td></tr>`;
+                return;
+            }
+
+            const now = Math.floor(Date.now() / 1000);
+            tbody.innerHTML = keys.map(k => {
+                const item = data[k];
+                const expirada = item.expires > 0 && item.expires < now;
+                const fechaTexto = item.expires === 0 ? "Lifetime" : new Date(item.expires * 1000).toLocaleDateString();
+                
+                let badge = `<span class="px-2 py-0.5 text-xs rounded bg-emerald-500/20 text-emerald-400">Activa</span>`;
+                if (item.status !== "active") badge = `<span class="px-2 py-0.5 text-xs rounded bg-red-500/20 text-red-400">Bloqueada</span>`;
+                else if (expirada) badge = `<span class="px-2 py-0.5 text-xs rounded bg-amber-500/20 text-amber-400">Expirada</span>`;
+
+                return `
+                    <tr class="hover:bg-slate-800/30">
+                        <td class="p-4 font-mono font-semibold text-emerald-300">${k}</td>
+                        <td class="p-4 text-slate-300">${item.note || "-"}</td>
+                        <td class="p-4 text-slate-400">${fechaTexto}</td>
+                        <td class="p-4">${badge}</td>
+                        <td class="p-4 text-right space-x-2">
+                            <button onclick="toggleEstado('${k}', '${item.status}')" class="px-2.5 py-1 text-xs rounded bg-slate-800 hover:bg-slate-700 text-slate-200">
+                                ${item.status === "active" ? "Pausar" : "Activar"}
+                            </button>
+                            <button onclick="eliminarKey('${k}')" class="px-2.5 py-1 text-xs rounded bg-red-950 hover:bg-red-900 text-red-300">
+                                Borrar
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join("");
+        }
+
+        cargarKeys();
+    </script>
+</body>
+</html>
