@@ -3,63 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Keys - PedroModz666</title>
+    <title>PedroModz666 Admin</title>
     <style>
         :root { --bg: #0a0a0a; --card: #141414; --accent: #e83434; --text: #f0f0f0; --text-d: #a8a8a8; --border: #2a2a2a; }
         * {margin:0;padding:0;box-sizing:border-box;}
         body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:20px;min-height:100vh;}
-        h1{font-family:'Space Grothes',monospace;font-size:2.2rem;color:var(--accent);margin-bottom:20px;}
+        h1{font-family:'Space Grothes',monospace;font-size:2.2rem;color:var(--accent);margin-bottom:20px;text-align:center;}
         .container{max-width:900px;margin:0 auto;}
         .card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:20px;}
         .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;}
         input[type="text"],input[type="date"],select{width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;}
-        button{padding:12px 24px;border:none;border-radius:6px;cursor:pointer;font-size:1rem;font-weight:600;transition:opacity 0.2s;}
+        button{padding:12px 24px;border:none;border-radius:6px;cursor:pointer;font-size:1rem;font-weight:600;transition:opacity 0.2s;width:100%;}
         button:hover{opacity:0.8;}
         .btn-primary{background:var(--accent);color:#fff;}
         .btn-danger{background:#dc2626;color:#fff;}
         .btn-success{background:#2e7e32;color:#fff;}
         table{width:100%;border-collapse:collapse;margin-top:20px;}
         th,td{padding:12px;text-align:left;border-bottom:1px solid var(--border);}
-        th{color:var(--accent);font-weight:600;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.5px;}
+        th{color:var(--accent);font-weight:0.85rem;text-transform:uppercase;letter-spacing:0.5px;}
         .status{padding:4px 8px;border-radius:4px;font-size:0.85rem;font-weight:600;}
         .status.active{background:#2e7e32;color:#fff;}
         .status.inactive{background:#666;color:#fff;}
         .empty{text-align:center;color:var(--text-d);padding:40px;font-style:italic;}
-        .actions{display:flex;gap:8px;}
+        .hidden { display: none !important; }
+        .tab-menu { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { background: #222; color: var(--text-d); border: 1px solid var(--border); }
+        .tab-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .instruction-box { background: #1a1a1a; padding: 15px; border-radius: 6px; border-left: 4px solid var(--accent); margin-bottom: 15px; font-size: 0.95rem; line-height: 1.5; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>⚡️ Admin Keys</h1>
-        
-        <div class="card">
-            <h3 style="color:var(--accent); margin-bottom:15px;">❏ Crear nueva key</h3>
-            <div class="form-grid">
-                <input type="text" id="newkey" placeholder="Key única (Ej: VIP-PEDRO)" maxlength="32">
-                <input type="date" id="expires">
-                <select id="type">
-                    <option value="vip">VIP</option>
-                    <option value="normal">Normal</option>
-                </select>
+        <h1>⚡️ PedroModz666 Admin</h1>
+
+        <!-- VISTA 1: LOGIN DE ADMINISTRADOR -->
+        <div id="loginView" class="card">
+            <h3 style="color:var(--accent); margin-bottom:15px;">🔒 Acceso de Administrador</h3>
+            <p style="color:var(--text-d); margin-bottom:15px;">Ingresa tu Key de Administrador personal para acceder al panel completo.</p>
+            <div style="margin-bottom: 15px;">
+                <input type="text" id="admKeyInput" placeholder="Ingresa tu Key Maestra..." />
             </div>
-            <button class="btn-primary" onclick="createKey()">Crear key</button>
+            <button class="btn-primary" onclick="verificarAdmin()">Entrar al Panel</button>
         </div>
-        
-        <div class="card">
-            <h3 style="color:var(--accent); margin-bottom:15px;">📋 Keys activas</h3>
-            <table>
-                <thead>
-                    <tr><th>Key</th><th>Tipo</th><th>Expira</th><th>Estado</th><th>Acciones</th></tr>
-                </thead>
-                <tbody id="keyslist"></tbody>
-            </table>
+
+        <!-- MENÚ DE PESTAÑAS (CLIENTE / ADMIN) -->
+        <div id="appContainer" class="hidden">
+            <div class="tab-menu">
+                <button class="tab-btn active" id="btnTabCliente" onclick="cambiarTab('cliente')">Portal de Clientes (Comprar Key)</button>
+                <button class="tab-btn" id="btnTabAdmin" onclick="cambiarTab('admin')">Panel de Control (Tú)</button>
+            </div>
+
+            <!-- SECCIÓN CLIENTE: COMPRAR Y GENERAR KEY AUTOMÁTICA -->
+            <div id="tabCliente" class="card">
+                <h3 style="color:var(--accent); margin-bottom:15px;">💎 Adquiere tu Membresía VIP / Normal</h3>
+                <div class="instruction-box">
+                    <b>Paso 1:</b> Realiza el pago accesible vía PayPal al correo: <code style="color:var(--accent);">principal06182@gmail.com</code><br>
+                    <b>Paso 2:</b> Selecciona el tipo de licencia que pagaste y pega tu <b>ID de Transacción (PayPal)</b>.<br>
+                    <b>Paso 3:</b> Haz clic en verificar y el sistema te generará tu Key aleatoria al instante.
+                </div>
+                
+                <div class="form-grid" style="margin-bottom:15px;">
+                    <div>
+                        <label style="display:block; margin-bottom:5px; font-size:0.9rem;">Tipo de Licencia:</label>
+                        <select id="clientType">
+                            <option value="vip">VIP (Acceso Total)</option>
+                            <option value="normal">Normal (Bypass)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block; margin-bottom:5px; font-size:0.9rem;">Duración:</label>
+                        <select id="clientDays">
+                            <option value="1">1 Día</option>
+                            <option value="7">7 Días</option>
+                            <option value="30">30 Días (Mes)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <input type="text" id="txIdInput" placeholder="Ej: 4X589213AB789123J (ID de Transacción PayPal)" />
+                </div>
+                
+                <button class="btn-success" onclick="comprarYGenerarKey()">Verificar Pago y Obtener Key</button>
+                <div id="clientResult" style="margin-top:15px;"></div>
+            </div>
+
+            <!-- SECCIÓN ADMINISTRADOR: GESTIÓN TOTAL -->
+            <div id="tabAdmin" class="card hidden">
+                <h3 style="color:var(--accent); margin-bottom:15px;">❏ Crear nueva key manualmente</h3>
+                <div class="form-grid">
+                    <input type="text" id="newkey" placeholder="Key única (Ej: VIP-CUSTOM)" maxlength="32">
+                    <input type="date" id="expires">
+                    <select id="type">
+                        <option value="vip">VIP</option>
+                        <option value="normal">Normal</option>
+                    </select>
+                </div>
+                <button class="btn-primary" onclick="createKey()">Crear key</button>
+                
+                <h3 style="color:var(--accent); margin:25px 0 15px 0;">📋 Keys activas en Firebase</h3>
+                <table>
+                    <thead>
+                        <tr><th>Key</th><th>Tipo</th><th>Expira</th><th>Estado</th><th>Acciones</th></tr>
+                    </thead>
+                    <tbody id="keyslist"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
         const FIREBASE_URL = 'https://pedromodz-keys-default-rtdb.firebaseio.com/keys';
         
+        // TU KEY MAESTRA SECRETA DE ADMINISTRADOR
+        const MI_KEY_ADMIN = "PEDRO-MASTER-SECRET-2026"; 
+        
         let keysData = {};
+
+        function verificarAdmin() {
+            const ingresada = document.getElementById('admKeyInput').value.trim();
+            if (ingresada === MI_KEY_ADMIN) {
+                document.getElementById('loginView').classList.add('hidden');
+                document.getElementById('appContainer').classList.remove('hidden');
+                loadKeys();
+            } else {
+                alert('Key de Administrador incorrecta. Acceso denegado.');
+            }
+        }
+
+        function cambiarTab(destino) {
+            if (destino === 'cliente') {
+                document.getElementById('tabCliente').classList.remove('hidden');
+                document.getElementById('tabAdmin').classList.add('hidden');
+                document.getElementById('btnTabCliente').classList.add('active');
+                document.getElementById('btnTabAdmin').classList.remove('active');
+            } else {
+                document.getElementById('tabCliente').classList.add('hidden');
+                document.getElementById('tabAdmin').classList.remove('hidden');
+                document.getElementById('btnTabAdmin').classList.add('active');
+                document.getElementById('btnTabCliente').classList.remove('active');
+                loadKeys();
+            }
+        }
         
         async function loadKeys() {
             try {
@@ -83,17 +168,7 @@
             tbl.innerHTML = keysArray.map(k => {
                 const item = keysData[k];
                 const isActive = item.status === 'active';
-                
-                // Calcular días restantes si tiene fecha de expiración
-                let expText = 'Sin expiración';
-                if (item.expires) {
-                    const expDate = new Date(item.expires);
-                    const today = new Date();
-                    const diffTime = expDate - today;
-                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    expText = `${diffDays} días (${item.expires})`;
-                }
-
+                let expText = item.expires || 'Sin expiración';
                 const tipoRango = (item.type || 'normal').toUpperCase();
                 const badgeColor = item.type === 'vip' ? 'background:#eab308;color:#000;' : 'background:#3b82f6;color:#fff;';
 
@@ -103,9 +178,9 @@
                         <td><span style="padding:3px 8px;border-radius:4px;font-size:0.75rem;font-weight:bold;${badgeColor}">${tipoRango}</span></td>
                         <td>${expText}</td>
                         <td><span class="status ${isActive ? 'active' : 'inactive'}">${isActive ? 'activa' : 'inactiva'}</span></td>
-                        <td class="actions">
-                            <button class="btn-success" onclick="toggleStatus('${k}')">${isActive ? 'Desactivar' : 'Activar'}</button>
-                            <button class="btn-danger" onclick="deleteKey('${k}')">Eliminar</button>
+                        <td>
+                            <button class="btn-success" style="padding:6px 12px;font-size:0.85rem;margin-bottom:4px;" onclick="toggleStatus('${k}')">${isActive ? 'Desactivar' : 'Activar'}</button>
+                            <button class="btn-danger" style="padding:6px 12px;font-size:0.85rem;" onclick="deleteKey('${k}')">Eliminar</button>
                         </td>
                     </tr>
                 `;
@@ -122,12 +197,6 @@
                 return;
             }
             
-            if (keysData[keyInput]) {
-                alert('Ya existe una key con ese nombre en la base de datos');
-                return;
-            }
-            
-            // Convertir la fecha seleccionada en timestamp o dejarla como texto legible
             const nuevaKeyData = {
                 status: 'active',
                 expires: expiresInput || null,
@@ -135,51 +204,88 @@
                 created: Math.floor(Date.now() / 1000)
             };
             
+            await fetch(`${FIREBASE_URL}/${keyInput}.json`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(nuevaKeyData)
+            });
+
+            document.getElementById('newkey').value = '';
+            document.getElementById('expires').value = '';
+            loadKeys();
+        }
+
+        // FUNCIÓN AUTOMÁTICA PARA CLIENTES (GENERA KEY ALEATORIA TRAS ID DE PAGO)
+        async function comprarYGenerarKey() {
+            const txId = document.getElementById('txIdInput').value.trim();
+            const tipo = document.getElementById('clientType').value.toUpperCase();
+            const dias = parseInt(document.getElementById('clientDays').value);
+            const resDiv = document.getElementById('clientResult');
+
+            if (!txId || txId.length < 5) {
+                resDiv.innerHTML = `<div style="background:#dc2626; color:#fff; padding:10px; border-radius:6px;">Por favor ingresa un ID de transacción de PayPal válido.</div>`;
+                return;
+            }
+
+            // Generar key aleatoria única para el cliente
+            const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+            const generatedKey = `PM-${tipo}-${randomCode}`;
+
+            // Calcular fecha de expiración sumando los días elegidos
+            const fechaExp = new Date();
+            fechaExp.setDate(fechaExp.getDate() + dias);
+            const fechaStr = fechaExp.toISOString().split('T')[0];
+
+            const clientKeyData = {
+                status: 'active',
+                expires: fechaStr,
+                type: tipo.toLowerCase(),
+                paypal_tx: txId,
+                created: Math.floor(Date.now() / 1000)
+            };
+
             try {
-                const response = await fetch(`${FIREBASE_URL}/${keyInput}.json`, {
+                resDiv.innerHTML = `<div style="color:var(--text-d); padding:10px;">Verificando ID de pago y generando licencia...</div>`;
+                
+                await fetch(`${FIREBASE_URL}/${generatedKey}.json`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(nuevaKeyData)
+                    body: JSON.stringify(clientKeyData)
                 });
 
-                if (response.ok) {
-                    document.getElementById('newkey').value = '';
-                    document.getElementById('expires').value = '';
-                    loadKeys();
-                } else {
-                    alert('Error al guardar en Firebase');
-                }
-            } catch (error) {
-                alert('Error de red al conectar con Firebase');
+                resDiv.innerHTML = `
+                    <div style="background:#2e7e32; color:#fff; padding:15px; border-radius:6px; margin-top:10px;">
+                        <b>¡Pago verificado con éxito! Aquí tienes tu Key generada:</b><br>
+                        <input type="text" value="${generatedKey}" readonly style="background:#111; color:#22c55e; font-weight:bold; text-align:center; margin-top:8px; font-size:1.1rem;" onclick="this.select();">
+                        <small style="display:block; margin-top:5px;">Cópiala y úsala en tu Termux. Duración: ${dias} días (${tipo}).</small>
+                    </div>
+                `;
+                document.getElementById('txIdInput').value = '';
+            } catch (e) {
+                resDiv.innerHTML = `<div style="background:#dc2626; color:#fff; padding:10px; border-radius:6px;">Error procesando la solicitud con Firebase.</div>`;
             }
         }
         
         async function toggleStatus(key) {
-            const item = keysData[key];
+            // Cargar datos actuales de esa key para alternar
+            const r = await fetch(`${FIREBASE_URL}/${key}.json`);
+            const item = await r.json();
             if (!item) return;
             
             item.status = item.status === 'active' ? 'inactive' : 'active';
-            
             await fetch(`${FIREBASE_URL}/${key}.json`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(item)
             });
-            
             loadKeys();
         }
         
         async function deleteKey(key) {
             if (!confirm(`¿Estás seguro de eliminar la key ${key}?`)) return;
-            
-            await fetch(`${FIREBASE_URL}/${key}.json`, {
-                method: 'DELETE'
-            });
-            
+            await fetch(`${FIREBASE_URL}/${key}.json`, { method: 'DELETE' });
             loadKeys();
         }
-        
-        loadKeys();
     </script>
 </body>
 </html>
