@@ -16,9 +16,9 @@ enviar_web() {
 
     if [ -n "$_curl" ]; then
         if [ -n "$data" ]; then
-            "$_curl" -s --max-time 5 -X POST "$url" -d "$data"
+            "$_curl" -s -4 --max-time 3 -X POST "$url" -d "$data"
         else
-            "$_curl" -s --max-time 5 "$url"
+            "$_curl" -s -4 --max-time 3 "$url"
         fi
         return 0
     fi
@@ -31,9 +31,9 @@ enviar_web() {
 
     if [ -n "$_wget" ]; then
         if [ -n "$data" ]; then
-            "$_wget" -qO- --timeout=5 --post-data="$data" "$url"
+            "$_wget" -qO- --timeout=3 --tries=1 --post-data="$data" "$url"
         else
-            "$_wget" -qO- --timeout=5 "$url"
+            "$_wget" -qO- --timeout=3 --tries=1 "$url"
         fi
         return 0
     fi
@@ -50,9 +50,9 @@ enviar_web() {
 
     if [ -n "$_bb" ]; then
         if [ -n "$data" ]; then
-            "$_bb" wget -qO- --timeout=5 --post-data="$data" "$url"
+            "$_bb" wget -qO- --timeout=3 --tries=1 --post-data="$data" "$url"
         else
-            "$_bb" wget -qO- --timeout=5 "$url"
+            "$_bb" wget -qO- --timeout=3 --tries=1 "$url"
         fi
         return 0
     fi
@@ -82,6 +82,9 @@ DESTINO="/data/user/0/com.dts.freefiremax/files/contentcache/Compulsory/android/
 
 clear
 
+# Variable global para almacenar el tipo de usuario (normal o vip)
+TIPO_USUARIO="normal"
+
 # --- VERIFICACIÓN DE KEY CONTRA FIREBASE ---
 intentos=0
 while [ "$intentos" -lt "$INTENTOS_MAXIMOS" ]; do
@@ -91,7 +94,6 @@ while [ "$intentos" -lt "$INTENTOS_MAXIMOS" ]; do
     printf "${AMARILLO}Ingresa tu Licencia: ${RESET}"
     read password
 
-    # Limpiar caracteres peligrosos para evitar consultas inválidas en la URL
     password_limpia=$(printf "%s" "$password" | tr -cd 'A-Za-z0-9_-')
 
     if [ -z "$password_limpia" ]; then
@@ -101,11 +103,10 @@ while [ "$intentos" -lt "$INTENTOS_MAXIMOS" ]; do
         continue
     fi
 
-    # Consultar la key específica en Firebase con límite de tiempo
     RESPUESTA_FB=$(enviar_web "$URL_FIREBASE/$password_limpia.json" "")
 
     if [ -z "$RESPUESTA_FB" ]; then
-        printf "\n${ROJO}[!] Error: No hay conexión a internet o el servidor tardó mucho en responder.${RESET}\n"
+        printf "\n${ROJO}[!] Error: No hay conexión a internet o el servidor tardó mucho.${RESET}\n"
         exit 1
     fi
 
@@ -113,10 +114,15 @@ while [ "$intentos" -lt "$INTENTOS_MAXIMOS" ]; do
     MOTIVO_ERROR="Key inválida o no existe"
 
     if [ "$RESPUESTA_FB" != "null" ]; then
-        # Extraer estado y fecha de expiración del JSON devuelto por Firebase
         ESTADO=$(printf "%s" "$RESPUESTA_FB" | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
+        TIPO_USUARIO=$(printf "%s" "$RESPUESTA_FB" | grep -o '"type":"[^"]*"' | cut -d'"' -f4)
         EXPIRA=$(printf "%s" "$RESPUESTA_FB" | grep -o '"expires":[0-9]*' | cut -d':' -f2)
         AHORA=$(date +%s)
+
+        # Si por alguna razón el JSON no trae tipo definido, por defecto lo dejamos en normal
+        if [ -z "$TIPO_USUARIO" ]; then
+            TIPO_USUARIO="normal"
+        fi
 
         if [ "$ESTADO" = "active" ]; then
             if [ -z "$EXPIRA" ] || [ "$EXPIRA" -eq 0 ] || [ "$EXPIRA" -gt "$AHORA" ]; then
@@ -130,10 +136,10 @@ while [ "$intentos" -lt "$INTENTOS_MAXIMOS" ]; do
     fi
 
     if [ "$KEY_VALIDA" -eq 1 ]; then
-        MSG_TG="👀 USO DE SCRIPT: Key correcta usada: $password_limpia"
+        MSG_TG="👀 USO DE SCRIPT: Key correcta usada ($TIPO_USUARIO): $password_limpia"
         enviar_web "https://api.telegram.org/bot$TOKEN_BOT/sendMessage" "chat_id=$TU_CHAT_ID&text=$MSG_TG" > /dev/null 2>&1
 
-        printf "\n${VERDE}[✔] ¡Licencia aceptada! Acceso concedido.${RESET}\n\n"
+        printf "\n${VERDE}[✔] ¡Licencia aceptada! Rango: ${TIPO_USUARIO^^}.${RESET}\n\n"
         sleep 1
         break
     else
@@ -161,11 +167,11 @@ while true; do
     clear
     printf "${AZUL}======================================\n"
     printf "${VERDE}             PedroModz666             \n"
-    printf "${CYAN}     Contacto: +593 986520417         \n"
+    printf "${CYAN}     Rango: ${TIPO_USUARIO^^} | Contacto: +593 986520417 \n"
     printf "${AZUL}======================================\n"
-    printf "${AMARILLO}        1)${RESET} Bypass Avion\n"
-    printf "${AMARILLO}        2)${RESET} Aimbot Pecho\n"
-    printf "${AMARILLO}        3)${RESET} Aimbot Cuello\n"
+    printf "${AMARILLO}        1)${RESET} Bypass Avion (Normal)\n"
+    printf "${AMARILLO}        2)${RESET} Aimbot Pecho ${AMARILLO}[VIP]${RESET}\n"
+    printf "${AMARILLO}        3)${RESET} Aimbot Cuello ${AMARILLO}[VIP]${RESET}\n"
     printf "${AMARILLO}        4)${RESET} Salir\n"
     printf "${AZUL}======================================${RESET}\n"
     printf "${VERDE}Selecciona una opción [1-4]: ${RESET}"
@@ -182,21 +188,31 @@ while true; do
             fi
             ;;
         2)
-            if [ -f "$FILE_PECHO" ]; then
-                printf "\n${CYAN}Inyectando Aimbot...${RESET}\n"
-                cat "$FILE_PECHO" > "$DESTINO"
-                printf "${VERDE}[✔] ¡Aimbot Pecho aplicado con éxito!${RESET}\n"
+            # Opción exclusiva VIP
+            if [ "$TIPO_USUARIO" != "vip" ]; then
+                printf "\n${ROJO}[!] Esta opción es exclusiva para usuarios VIP. ¡Actualiza tu licencia!${RESET}\n"
             else
-                printf "\n${ROJO}[!] Error: No se encuentra el archivo en Pecho/${RESET}\n"
+                if [ -f "$FILE_PECHO" ]; then
+                    printf "\n${CYAN}Inyectando Aimbot VIP...${RESET}\n"
+                    cat "$FILE_PECHO" > "$DESTINO"
+                    printf "${VERDE}[✔] ¡Aimbot Pecho VIP aplicado con éxito!${RESET}\n"
+                else
+                    printf "\n${ROJO}[!] Error: No se encuentra el archivo en Pecho/${RESET}\n"
+                fi
             fi
             ;;
         3)
-            if [ -f "$FILE_CUELLO" ]; then
-                printf "\n${CYAN}Inyectando Aimbot Cuello...${RESET}\n"
-                cat "$FILE_CUELLO" > "$DESTINO"
-                printf "${VERDE}[✔] ¡Aimbot Cuello aplicado con éxito!${RESET}\n"
+            # Opción exclusiva VIP
+            if [ "$TIPO_USUARIO" != "vip" ]; then
+                printf "\n${ROJO}[!] Esta opción es exclusiva para usuarios VIP. ¡Actualiza tu licencia!${RESET}\n"
             else
-                printf "\n${ROJO}[!] Error: No se encuentra el archivo en Cuello/${RESET}\n"
+                if [ -f "$FILE_CUELLO" ]; then
+                    printf "\n${CYAN}Inyectando Aimbot Cuello VIP...${RESET}\n"
+                    cat "$FILE_CUELLO" > "$DESTINO"
+                    printf "${VERDE}[✔] ¡Aimbot Cuello VIP aplicado con éxito!${RESET}\n"
+                else
+                    printf "\n${ROJO}[!] Error: No se encuentra el archivo en Cuello/${RESET}\n"
+                fi
             fi
             ;;
         4)
@@ -208,5 +224,5 @@ while true; do
             ;;
     esac
 
-    sleep 1.5
+    sleep 2
 done
