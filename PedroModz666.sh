@@ -1,146 +1,164 @@
 #!/system/bin/sh
 
-# --- CONFIGURACIÓN DE FIREBASE ---
+# --- CONFIGURACIÓN DE ACTUALIZACIÓN ONLINE ---
+VERSION_ACTUAL="1.3.2"
+URL_VERSION="https://raw.githubusercontent.com/Pedromora13/script-ff-normal/main/version.txt"
+URL_SCRIPT="https://raw.githubusercontent.com/Pedromora13/script-ff-normal/main/PedroModz666.sh"
 URL_FIREBASE="https://pedromodz-keys-default-rtdb.firebaseio.com/keys"
-# ---------------------------------
+# ---------------------------------------------
 
+# Función universal para peticiones web (Compatible con Curl, Wget o Busybox)
 enviar_web() {
     local url="$1"
     local data="$2"
-    
     if command -v curl >/dev/null 2>&1; then
-        _curl="curl"
-    elif [ -x /data/data/com.termux/files/usr/bin/curl ]; then
-        _curl="/data/data/com.termux/files/usr/bin/curl"
-    fi
-
-    if [ -n "$_curl" ]; then
         if [ -n "$data" ]; then
-            "$_curl" -s -4 --max-time 3 -X POST "$url" -d "$data"
+            curl -s -X POST "$url" -d "$data"
         else
-            "$_curl" -s -4 --max-time 3 "$url"
+            curl -s "$url"
         fi
-        return 0
-    fi
-
-    if command -v wget >/dev/null 2>&1; then
-        _wget="wget"
-    elif [ -x /data/data/com.termux/files/usr/bin/wget ]; then
-        _wget="/data/data/com.termux/files/usr/bin/wget"
-    fi
-
-    if [ -n "$_wget" ]; then
+    elif command -v wget >/dev/null 2>&1; then
         if [ -n "$data" ]; then
-            "$_wget" -qO- --timeout=3 --tries=1 --post-data="$data" "$url"
+            wget -qO- --post-data="$data" "$url"
         else
-            "$_wget" -qO- --timeout=3 --tries=1 "$url"
+            wget -qO- "$url"
         fi
-        return 0
-    fi
-
-    if busybox wget --help >/dev/null 2>&1; then
-        _bb="busybox"
-    elif [ -x /system/xbin/busybox ]; then
-        _bb="/system/xbin/busybox"
-    elif [ -x /system/bin/busybox ]; then
-        _bb="/system/bin/busybox"
-    elif [ -x /sbin/busybox ]; then
-        _bb="/sbin/busybox"
-    fi
-
-    if [ -n "$_bb" ]; then
+    elif busybox wget --help >/dev/null 2>&1; then
         if [ -n "$data" ]; then
-            "$_bb" wget -qO- --timeout=3 --tries=1 --post-data="$data" "$url"
+            busybox wget -qO- --post-data="$data" "$url"
         else
-            "$_bb" wget -qO- --timeout=3 --tries=1 "$url"
+            busybox wget -qO- "$url"
         fi
-        return 0
-    fi
-
-    if command -v toybox >/dev/null 2>&1; then
-        toybox wget -qO- "$url" 2>/dev/null
-        return 0
     fi
 }
+
+verificar_actualizacion() {
+    VERSION_REMOTA=$(enviar_web "$URL_VERSION?v=$(date +%s)" "" | tr -d '\r' | tr -d '\n' | xargs)
+    
+    if [ -n "$VERSION_REMOTA" ] && [ "$VERSION_ACTUAL" != "$VERSION_REMOTA" ]; then
+        printf "\n\033[1;31m╔════════════════════════════════════════╗\n"
+        printf "║    🔥 ¡NUEVA ACTUALIZACIÓN DISPONIBLE! 🔥    ║\n"
+        printf "╚════════════════════════════════════════╝\033[0m\n"
+        printf "\033[1;33mVersión actual: $VERSION_ACTUAL ➔ Nueva: $VERSION_REMOTA\033[0m\n"
+        printf "¿Deseas actualizar ahora? (s/n): "
+        read respuesta
+        if [ "$respuesta" = "s" ] || [ "$respuesta" = "S" ]; then
+            printf "Actualizando script...\n"
+            if command -v curl >/dev/null 2>&1; then
+                curl -s -o "$0" "$URL_SCRIPT"
+            elif command -v wget >/dev/null 2>&1; then
+                wget -q -O "$0" "$URL_SCRIPT"
+            else
+                busybox wget -q -O "$0" "$URL_SCRIPT"
+            fi
+            chmod +x "$0"
+            printf "\033[1;32m¡Actualización completada! Vuelve a abrir el script.\033[0m\n\n"
+            exit 0
+        else
+            printf "\n\033[1;31m[!] Debes actualizar el script para continuar. Saliendo...\033[0m\n\n"
+            exit 0
+        fi
+    fi
+}
+
+verificar_actualizacion
 
 # --- CONFIGURACIÓN DE TELEGRAM ---
 TOKEN_BOT="8683483962:AAGHLpFhkenCuKPbo_jDSlHP5RtomhR3L4Y"
 TU_CHAT_ID="7024840116"
+
 INTENTOS_MAXIMOS=3
 
+# Colores ANSI Estilizados
 ROJO='\033[1;31m'
 VERDE='\033[1;32m'
 AZUL='\033[1;36m'
 AMARILLO='\033[1;33m'
 CYAN='\033[0;36m'
+MAGENTA='\033[1;35m'
 RESET='\033[0m'
 
-FILE_ORI="/storage/emulated/0/PedroModz666/Ori/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
-FILE_PECHO="/storage/emulated/0/PedroModz666/Pecho/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
-FILE_CUELLO="/storage/emulated/0/PedroModz666/Cuello/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
-DESTINO="/data/user/0/com.dts.freefiremax/files/contentcache/Compulsory/android/gameassetbundles/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
+# --- RUTAS DE ARCHIVOS Y DESTINO (Free Fire TH) ---
+FILE_ORI="/storage/emulated/0/PedroMod666/Ori/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
+FILE_PECHO="/storage/emulated/0/PedroMod666/Pecho/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
+FILE_CUELLO="/storage/emulated/0/PedroMod666/Cuello/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
+FILE_ROJO_V2="/storage/emulated/0/PedroMod666/666V2 Crítico Rojo/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
+
+DESTINO="/data/user/0/com.dts.freefireth/files/contentcache/Compulsory/android/gameassetbundles/cache_res.0fNB3oXqZOJRyvBVnID6F8UK2IM~3D"
 
 clear
 
-# Variable global para almacenar el tipo de usuario (normal o vip)
+# Variables globales para control de sesión
 TIPO_USUARIO="normal"
+KEY_INGRESADA=""
 
 # --- VERIFICACIÓN DE KEY CONTRA FIREBASE ---
 intentos=0
 while [ "$intentos" -lt "$INTENTOS_MAXIMOS" ]; do
-    printf "${AZUL}======================================\n"
-    printf "${VERDE}        🔐 INGRESA TU LICENCIA 🔐        \n"
-    printf "${AZUL}======================================${RESET}\n"
-    printf "${AMARILLO}Ingresa tu Licencia: ${RESET}"
+    printf "${AZUL}╔════════════════════════════════════════╗${RESET}\n"
+    printf "${VERDE}║         ⚡️ PEDROMODZ666 ADMIN ⚡️       ║${RESET}\n"
+    printf "${AZUL}╚════════════════════════════════════════╝${RESET}\n"
+    printf "${MAGENTA}        🔐 VALIDACIÓN DE LICENCIA 🔐      ${RESET}\n"
+    printf "${AZUL}════════════════════════════════════════${RESET}\n"
+    printf "${AMARILLO} ➔ Ingresa tu Licencia: ${RESET}"
     read password
 
     password_limpia=$(printf "%s" "$password" | tr -cd 'A-Za-z0-9_-')
 
     if [ -z "$password_limpia" ]; then
-        printf "\n${ROJO}[✖] Ingresa una licencia válida.${RESET}\n\n"
+        printf "\n${ROJO}[✖] Por favor ingresa una licencia válida.${RESET}\n\n"
         sleep 1
         clear
         continue
     fi
 
+    # Petición al backend de Firebase para consultar la key específica
     RESPUESTA_FB=$(enviar_web "$URL_FIREBASE/$password_limpia.json" "")
 
     if [ -z "$RESPUESTA_FB" ]; then
-        printf "\n${ROJO}[!] Error: No hay conexión a internet o el servidor tardó mucho.${RESET}\n"
+        printf "\n${ROJO}[!] Error: Sin conexión a internet o servidor inaccesible.${RESET}\n"
         exit 1
     fi
 
     KEY_VALIDA=0
-    MOTIVO_ERROR="Key inválida o no existe"
+    MOTIVO_ERROR="Licencia inválida o no existe"
 
     if [ "$RESPUESTA_FB" != "null" ]; then
         ESTADO=$(printf "%s" "$RESPUESTA_FB" | grep -o '"status":"[^"]*"' | cut -d'"' -f4)
         TIPO_USUARIO=$(printf "%s" "$RESPUESTA_FB" | grep -o '"type":"[^"]*"' | cut -d'"' -f4)
-        EXPIRA=$(printf "%s" "$RESPUESTA_FB" | grep -o '"expires":[0-9]*' | cut -d':' -f2)
+        EXPIRA=$(printf "%s" "$RESPUESTA_FB" | grep -o '"expires":"[^"]*"' | cut -d'"' -f4)
         AHORA=$(date +%s)
 
-        # Si por alguna razón el JSON no trae tipo definido, por defecto lo dejamos en normal
         if [ -z "$TIPO_USUARIO" ]; then
             TIPO_USUARIO="normal"
         fi
 
         if [ "$ESTADO" = "active" ]; then
-            if [ -z "$EXPIRA" ] || [ "$EXPIRA" -eq 0 ] || [ "$EXPIRA" -gt "$AHORA" ]; then
+            # Validación de expiración si no es permanente (null)
+            if [ -z "$EXPIRA" ] || [ "$EXPIRA" = "null" ]; then
                 KEY_VALIDA=1
             else
-                MOTIVO_ERROR="Licencia expirada"
+                EXPIRA_EPOCH=$(date -d "$EXPIRA" +%s 2>/dev/null || echo 0)
+                if [ "$EXPIRA_EPOCH" -eq 0 ] || [ "$EXPIRA_EPOCH" -gt "$AHORA" ]; then
+                    KEY_VALIDA=1
+                else
+                    MOTIVO_ERROR="La licencia ha expirado"
+                fi
             fi
         else
-            MOTIVO_ERROR="Licencia bloqueada o pausada"
+            MOTIVO_ERROR="Licencia inactiva o bloqueada"
         fi
     fi
 
     if [ "$KEY_VALIDA" -eq 1 ]; then
-        MSG_TG="👀 USO DE SCRIPT: Key correcta usada ($TIPO_USUARIO): $password_limpia"
+        KEY_INGRESADA="$password_limpia"
+        MSG_TG="👀 ACCESO SCRIPT FF:\nKey correcta usada ($TIPO_USUARIO): $password_limpia"
         enviar_web "https://api.telegram.org/bot$TOKEN_BOT/sendMessage" "chat_id=$TU_CHAT_ID&text=$MSG_TG" > /dev/null 2>&1
 
-        printf "\n${VERDE}[✔] ¡Licencia aceptada! Rango: ${TIPO_USUARIO^^}.${RESET}\n\n"
-        sleep 1
+        printf "\n${VERDE}┌────────────────────────────────────────┐${RESET}\n"
+        printf "${VERDE}│   [✔] ¡ACCESO AUTORIZADO! RANGO: ${TIPO_USUARIO^^}   │${RESET}\n"
+        printf "${VERDE}└────────────────────────────────────────┘${RESET}\n\n"
+        sleep 1.2
         break
     else
         intentos=$((intentos + 1))
@@ -149,78 +167,141 @@ while [ "$intentos" -lt "$INTENTOS_MAXIMOS" ]; do
         MSG_TG="⚠️ Fallo de acceso ($MOTIVO_ERROR): $password_limpia (Restantes: $restantes)"
         enviar_web "https://api.telegram.org/bot$TOKEN_BOT/sendMessage" "chat_id=$TU_CHAT_ID&text=$MSG_TG" > /dev/null 2>&1
 
-        printf "\n${ROJO}[✖] $MOTIVO_ERROR. Intentos restantes: $restantes${RESET}\n\n"
+        printf "\n${ROJO}┌────────────────────────────────────────┐${RESET}\n"
+        printf "${ROJO}│   [✖] $MOTIVO_ERROR (Restantes: $restantes) │${RESET}\n"
+        printf "${ROJO}└────────────────────────────────────────┘${RESET}\n\n"
+        
         if [ "$intentos" -ge "$INTENTOS_MAXIMOS" ]; then
-            MSG_TG="🚫 Script bloqueado por exceder intentos fallidos."
+            MSG_TG="🚫 Script bloqueado por exceder intentos de keys erróneas."
             enviar_web "https://api.telegram.org/bot$TOKEN_BOT/sendMessage" "chat_id=$TU_CHAT_ID&text=$MSG_TG" > /dev/null 2>&1
 
             printf "${ROJO}[!] Demasiados intentos fallidos. Saliendo...${RESET}\n\n"
             exit 1
         fi
-        sleep 1
+        sleep 1.5
         clear
     fi
 done
 
-# --- MENÚ PRINCIPAL ---
+# --- FUNCIÓN DE INFO DEL DISPOSITIVO ---
+obtener_info_dispositivo() {
+    MODELO=$(getprop ro.product.model 2>/dev/null || echo "Desconocido")
+    ANDROID_VER=$(getprop ro.build.version.release 2>/dev/null || echo "N/A")
+    if [ -d /data/adb/magisk ] || [ -f /system/bin/su ] || [ -f /system/xbin/su ]; then
+        ROOT_STATUS="${VERDE}Root [✔]${RESET}"
+    else
+        ROOT_STATUS="${AMARILLO}Sin Root${RESET}"
+    fi
+}
+
+# --- MENÚ PRINCIPAL DINÁMICO ---
 while true; do
     clear
-    printf "${AZUL}======================================\n"
-    printf "${VERDE}             PedroModz666             \n"
-    printf "${CYAN}     Rango: ${TIPO_USUARIO^^} | Contacto: +593 986520417 \n"
-    printf "${AZUL}======================================\n"
-    printf "${AMARILLO}        1)${RESET} Bypass Avion (Normal)\n"
-    printf "${AMARILLO}        2)${RESET} Aimbot Pecho ${AMARILLO}[VIP]${RESET}\n"
-    printf "${AMARILLO}        3)${RESET} Aimbot Cuello ${AMARILLO}[VIP]${RESET}\n"
-    printf "${AMARILLO}        4)${RESET} Salir\n"
-    printf "${AZUL}======================================${RESET}\n"
-    printf "${VERDE}Selecciona una opción [1-4]: ${RESET}"
+    obtener_info_dispositivo
+
+    printf "${AZUL}╔════════════════════════════════════════╗${RESET}\n"
+    printf "${VERDE}            ⚡ PedroModz666 ⚡            \n"
+    printf "${CYAN}     Rango: ${TIPO_USUARIO^^} | Soporte: +593986520417 \n"
+    printf "${AZUL}╚════════════════════════════════════════╝${RESET}\n"
+    printf "${AMARILLO} 📱 Celular:${RESET} $MODELO\n"
+    printf "${AMARILLO} 🤖 Android:${RESET} $ANDROID_VER | $ROOT_STATUS\n"
+    printf "${AZUL}════════════════════════════════════════${RESET}\n"
+    printf "${AMARILLO}  [1]${RESET} 🚀 Bypass Avion\n"
+    printf "${AMARILLO}  [2]${RESET} 🎯 Aimbot Pecho\n"
+    printf "${AMARILLO}  [3]${RESET} 🎯 Aimbot Cuello\n"
+    
+    # Menú condicional: Si el usuario es VIP, mostramos la opción crítica
+    if [ "$TIPO_USUARIO" = "vip" ]; then
+        printf "${AMARILLO}  [4]${RESET} ⚠️🔥 Aimbot Crítico [VIP EXCLUSIVO]\n"
+        printf "${AMARILLO}  [5]${RESET} 🛡️ Bypass Offline\n"
+        printf "${AMARILLO}  [6]${RESET} ❌ Salir\n"
+        OPCION_MAX=6
+    else
+        printf "${AMARILLO}  [4]${RESET} 🛡️ Bypass Offline\n"
+        printf "${AMARILLO}  [5]${RESET} ❌ Salir\n"
+        OPCION_MAX=5
+    fi
+    
+    printf "${AZUL}════════════════════════════════════════${RESET}\n"
+    printf "${VERDE} ➔ Selecciona una opción: ${RESET}"
     read opcion
 
     case "$opcion" in
         1)
             if [ -f "$FILE_ORI" ]; then
-                printf "\n${CYAN}Inyectando Bypass...${RESET}\n"
-                cat "$FILE_ORI" > "$DESTINO"
-                printf "${VERDE}[✔] ¡Bypass Active Disfruta!${RESET}\n"
+                printf "\n${CYAN}⏳ Inyectando Bypass en Free Fire TH...${RESET}\n"
+                cat "$FILE_ORI" > "$DESTINO" 2>/dev/null
+                printf "${VERDE}[✔] ¡Bypass Activado con éxito! Disfruta 🚀${RESET}\n"
             else
-                printf "\n${ROJO}[!] Error: No se encuentra el archivo Bypass/${RESET}\n"
+                printf "\n${ROJO}[!] Error: No se encuentra el archivo en la ruta Ori/${RESET}\n"
             fi
             ;;
         2)
-            # Opción exclusiva VIP
-            if [ "$TIPO_USUARIO" != "vip" ]; then
-                printf "\n${ROJO}[!] Esta opción es exclusiva para usuarios VIP. ¡Actualiza tu licencia!${RESET}\n"
+            if [ -f "$FILE_PECHO" ]; then
+                printf "\n${CYAN}⏳ Inyectando Aimbot Pecho...${RESET}\n"
+                cat "$FILE_PECHO" > "$DESTINO" 2>/dev/null
+                printf "${VERDE}[✔] ¡Aimbot Pecho aplicado correctamente! 🔥${RESET}\n"
             else
-                if [ -f "$FILE_PECHO" ]; then
-                    printf "\n${CYAN}Inyectando Aimbot VIP...${RESET}\n"
-                    cat "$FILE_PECHO" > "$DESTINO"
-                    printf "${VERDE}[✔] ¡Aimbot Pecho VIP aplicado con éxito!${RESET}\n"
-                else
-                    printf "\n${ROJO}[!] Error: No se encuentra el archivo en Pecho/${RESET}\n"
-                fi
+                printf "\n${ROJO}[!] Error: No se encuentra el archivo en Pecho/${RESET}\n"
             fi
             ;;
         3)
-            # Opción exclusiva VIP
-            if [ "$TIPO_USUARIO" != "vip" ]; then
-                printf "\n${ROJO}[!] Esta opción es exclusiva para usuarios VIP. ¡Actualiza tu licencia!${RESET}\n"
+            if [ -f "$FILE_CUELLO" ]; then
+                printf "\n${CYAN}⏳ Inyectando Aimbot Cuello...${RESET}\n"
+                cat "$FILE_CUELLO" > "$DESTINO" 2>/dev/null
+                printf "${VERDE}[✔] ¡Aimbot Cuello aplicado correctamente! 🎯${RESET}\n"
             else
-                if [ -f "$FILE_CUELLO" ]; then
-                    printf "\n${CYAN}Inyectando Aimbot Cuello VIP...${RESET}\n"
-                    cat "$FILE_CUELLO" > "$DESTINO"
-                    printf "${VERDE}[✔] ¡Aimbot Cuello VIP aplicado con éxito!${RESET}\n"
-                else
-                    printf "\n${ROJO}[!] Error: No se encuentra el archivo en Cuello/${RESET}\n"
-                fi
+                printf "\n${ROJO}[!] Error: No se encuentra el archivo en Cuello/${RESET}\n"
             fi
             ;;
         4)
-            printf "\n${CYAN}Saliendo. ¡Hasta luego, crack!${RESET}\n\n"
-            exit 0
+            if [ "$TIPO_USUARIO" = "vip" ]; then
+                # Opción exclusiva para usuarios VIP (Aimbot Crítico / 666V2)
+                if [ -f "$FILE_ROJO_V2" ]; then
+                    printf "\n${CYAN}⏳ Inyectando Aimbot Crítico VIP...${RESET}\n"
+                    cat "$FILE_ROJO_V2" > "$DESTINO" 2>/dev/null
+                    printf "${VERDE}[✔] ¡Aimbot Crítico aplicado con éxito! ⚠️🔥${RESET}\n"
+                else
+                    printf "\n${ROJO}[!] Error: No se encuentra el archivo en la ruta RojoV2/${RESET}\n"
+                fi
+            else
+                # Si es normal, la opción 4 ejecuta el Bypass Offline
+                printf "\n${CYAN}⏳ Ejecutando Bypass Offline...${RESET}\n"
+                rm -rf /data/user/0/com.dts.freefireth/files/contentcache 2>/dev/null
+                if [ $? -eq 0 ]; then
+                    printf "${VERDE}[✔] BYPASS OFFLINE ACTIVO. 🛡️${RESET}\n"
+                else
+                    printf "${ROJO}[!] Error al eliminar. Asegúrate de otorgar permisos Root.${RESET}\n"
+                fi
+            fi
+            ;;
+        5)
+            if [ "$TIPO_USUARIO" = "vip" ]; then
+                # Opción 5 para VIP es el Bypass Offline
+                printf "\n${CYAN}⏳ Ejecutando Bypass Offline...${RESET}\n"
+                rm -rf /data/user/0/com.dts.freefireth/files/contentcache 2>/dev/null
+                if [ $? -eq 0 ]; then
+                    printf "${VERDE}[✔] BYPASS OFFLINE ACTIVO. 🛡️${RESET}\n"
+                else
+                    printf "${ROJO}[!] Error al eliminar. Asegúrate de otorgar permisos Root.${RESET}\n"
+                fi
+            else
+                # Opción 5 para Normal es Salir
+                printf "\n${CYAN}👋 ¡Hasta luego, crack!${RESET}\n\n"
+                exit 0
+            fi
+            ;;
+        6)
+            if [ "$TIPO_USUARIO" = "vip" ]; then
+                # Opción 6 para VIP es Salir
+                printf "\n${CYAN}👋 ¡Hasta luego, crack!${RESET}\n\n"
+                exit 0
+            else
+                printf "\n${ROJO}[!] Opción no válida.${RESET}\n"
+            fi
             ;;
         *)
-            printf "\n${ROJO}[!] Opción no válida.${RESET}\n"
+            printf "\n${ROJO}[!] Opción no válida, intenta de nuevo.${RESET}\n"
             ;;
     esac
 
