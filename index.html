@@ -3,170 +3,122 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PedroModz666 | Key Manager (Firebase)</title>
+    <title>PedroModz666 - Panel de Licencias</title>
+    <!-- Tailwind CSS para un diseño rápido y moderno -->
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-950 text-slate-100 min-h-screen p-6 font-sans">
-    <div class="max-w-4xl mx-auto">
-        <header class="flex justify-between items-center border-b border-slate-800 pb-4 mb-6">
-            <div>
-                <h1 class="text-2xl font-bold text-emerald-400">PedroModz666 — KeyS</h1>
-                <p class="text-xs text-slate-400">EL MEJOR EN ESTA MIERDA</p>
-            </div>
-            <span id="status-badge" class="px-3 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                Sincronizando...
-            </span>
-        </header>
-
-        <!-- Formulario para crear Key -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 mb-6 grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-                <label class="block text-xs text-slate-400 mb-1">Nombre / Key</label>
-                <input id="input-key" type="text" placeholder="Ej: PEDRO-VIP-2026" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
-            </div>
-            <div>
-                <label class="block text-xs text-slate-400 mb-1">Cliente / Nota</label>
-                <input id="input-note" type="text" placeholder="Ej: Juan Pérez" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
-            </div>
-            <div>
-                <label class="block text-xs text-slate-400 mb-1">Duración (Días)</label>
-                <select id="input-days" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-emerald-500">
-                    <option value="1">1 Día</option>
-                    <option value="7">7 Días</option>
-                    <option value="30" selected>30 Días</option>
-                    <option value="9999">Lifetime (Permanente)</option>
-                </select>
-            </div>
-            <div class="flex items-end gap-2">
-                <button onclick="generarAleatoria()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-lg text-sm transition" title="Generar código">🎲</button>
-                <button onclick="crearKey()" class="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 px-4 rounded-lg text-sm transition">
-                    + Crear Key
-                </button>
-            </div>
-        </div>
-
-        <!-- Tabla de Keys -->
-        <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-slate-800/50 text-slate-400 text-xs uppercase">
-                        <th class="p-4">Licencia</th>
-                        <th class="p-4">Cliente</th>
-                        <th class="p-4">Expira</th>
-                        <th class="p-4">Estado</th>
-                        <th class="p-4 text-right">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="keys-table" class="divide-y divide-slate-800 text-sm">
-                    <tr><td colspan="5" class="p-6 text-center text-slate-500">Cargando claves...</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
     <script>
-        const DB_URL = "https://pedromodz-keys-default-rtdb.firebaseio.com/keys";
+        const FIREBASE_URL = "https://pedromodz-keys-default-rtdb.firebaseio.com/keys.json";
 
-        function generarAleatoria() {
-            const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-            let res = "PM666-";
-            for (let i = 0; i < 6; i++) res += chars.charAt(Math.floor(Math.random() * chars.length));
-            document.getElementById("input-key").value = res;
+        async function generarKey() {
+            const keyInput = document.getElementById("customKey").value.trim();
+            const diasInput = parseInt(document.getElementById("diasInput").value) || 1;
+            const tipoLicencia = document.getElementById("tipoLicencia").value; // VIP o Normal
+            const resultadoDiv = document.getElementById("resultado");
+
+            const keyFinal = keyInput !== "" ? keyInput : "VIP-" + Math.random().toString(36.substring(2, 9)).toUpperCase();
+            const ahora = Math.floor(Date.now() / 1000);
+            const expiracion = ahora + (diasInput * 86400);
+
+            const datos = {
+                status: "active",
+                type: tipoLicencia, // Guarda si es VIP o Normal
+                expires: expiracion,
+                created: ahora
+            };
+
+            try {
+                const response = await fetch(`https://pedromodz-keys-default-rtdb.firebaseio.com/keys/${keyFinal}.json`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datos)
+                });
+
+                if (response.ok) {
+                    resultadoDiv.innerHTML = `<div class="p-3 bg-green-600 text-white rounded mt-4">¡Key <b>${tipoLicencia.toUpperCase()}</b> creada con éxito!<br><b>${keyFinal}</b></div>`;
+                    cargarKeys();
+                } else {
+                    resultadoDiv.innerHTML = `<div class="p-3 bg-red-600 text-white rounded mt-4">Error al crear la key en Firebase.</div>`;
+                }
+            } catch (error) {
+                resultadoDiv.innerHTML = `<div class="p-3 bg-red-600 text-white rounded mt-4">Error de conexión con la base de datos.</div>`;
+            }
         }
 
         async function cargarKeys() {
-            const badge = document.getElementById("status-badge");
             try {
-                const res = await fetch(`${DB_URL}.json`);
-                const data = await res.json();
-                renderTabla(data || {});
-                badge.textContent = "En línea";
-                badge.className = "px-3 py-1 text-xs rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
-            } catch (e) {
-                badge.textContent = "Error de conexión";
-                badge.className = "px-3 py-1 text-xs rounded-full bg-red-500/10 text-red-400 border border-red-500/30";
+                const response = await fetch(FIREBASE_URL);
+                const data = await response.json();
+                const lista = document.getElementById("listaKeys");
+                lista.innerHTML = "";
+
+                if (data) {
+                    Object.keys(data).forEach(key => {
+                        const info = data[key];
+                        const tipoBadge = info.type === 'vip' 
+                            ? '<span class="bg-yellow-500 text-black px-2 py-0.5 rounded text-xs font-bold">VIP</span>' 
+                            : '<span class="bg-blue-500 text-white px-2 py-0.5 rounded text-xs font-bold">NORMAL</span>';
+
+                        lista.innerHTML += `
+                            <div class="flex justify-between items-center bg-gray-700 p-3 rounded mb-2">
+                                <div>
+                                    <span class="font-mono text-green-400 font-bold">${key}</span> ${tipoBadge}
+                                </div>
+                                <button onclick="eliminarKey('${key}')" class="bg-red-500 hover:bg-red-700 text-white px-3 py-1 rounded text-sm">Eliminar</button>
+                            </div>`;
+                    });
+                }
+            } catch (error) {
+                console.error("Error cargando licencias");
             }
-        }
-
-        async function crearKey() {
-            const key = document.getElementById("input-key").value.trim().replace(/[.#$\[\]\/]/g, "");
-            const note = document.getElementById("input-note").value.trim() || "Sin nota";
-            const days = parseInt(document.getElementById("input-days").value);
-
-            if (!key) return alert("Escribe o genera una key primero.");
-
-            const now = Math.floor(Date.now() / 1000);
-            const expires = days === 9999 ? 0 : now + (days * 86400);
-
-            const payload = {
-                status: "active",
-                note: note,
-                expires: expires
-            };
-
-            await fetch(`${DB_URL}/${key}.json`, {
-                method: "PUT",
-                body: JSON.stringify(payload)
-            });
-
-            document.getElementById("input-key").value = "";
-            document.getElementById("input-note").value = "";
-            cargarKeys();
-        }
-
-        async function toggleEstado(key, estadoActual) {
-            const nuevoEstado = estadoActual === "active" ? "banned" : "active";
-            await fetch(`${DB_URL}/${key}/status.json`, {
-                method: "PUT",
-                body: JSON.stringify(nuevoEstado)
-            });
-            cargarKeys();
         }
 
         async function eliminarKey(key) {
-            if (!confirm(`¿Eliminar permanentemente la key ${key}?`)) return;
-            await fetch(`${DB_URL}/${key}.json`, { method: "DELETE" });
-            cargarKeys();
-        }
-
-        function renderTabla(data) {
-            const tbody = document.getElementById("keys-table");
-            const keys = Object.keys(data);
-            if (keys.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-500">No hay keys creadas todavía.</td></tr>`;
-                return;
+            if (confirm(`¿Seguro que deseas eliminar la key ${key}?`)) {
+                await fetch(`https://pedromodz-keys-default-rtdb.firebaseio.com/keys/${key}.json`, { method: 'DELETE' });
+                cargarKeys();
             }
-
-            const now = Math.floor(Date.now() / 1000);
-            tbody.innerHTML = keys.map(k => {
-                const item = data[k];
-                const expirada = item.expires > 0 && item.expires < now;
-                const fechaTexto = item.expires === 0 ? "Lifetime" : new Date(item.expires * 1000).toLocaleDateString();
-                
-                let badge = `<span class="px-2 py-0.5 text-xs rounded bg-emerald-500/20 text-emerald-400">Activa</span>`;
-                if (item.status !== "active") badge = `<span class="px-2 py-0.5 text-xs rounded bg-red-500/20 text-red-400">Bloqueada</span>`;
-                else if (expirada) badge = `<span class="px-2 py-0.5 text-xs rounded bg-amber-500/20 text-amber-400">Expirada</span>`;
-
-                return `
-                    <tr class="hover:bg-slate-800/30">
-                        <td class="p-4 font-mono font-semibold text-emerald-300">${k}</td>
-                        <td class="p-4 text-slate-300">${item.note || "-"}</td>
-                        <td class="p-4 text-slate-400">${fechaTexto}</td>
-                        <td class="p-4">${badge}</td>
-                        <td class="p-4 text-right space-x-2">
-                            <button onclick="toggleEstado('${k}', '${item.status}')" class="px-2.5 py-1 text-xs rounded bg-slate-800 hover:bg-slate-700 text-slate-200">
-                                ${item.status === "active" ? "Pausar" : "Activar"}
-                            </button>
-                            <button onclick="eliminarKey('${k}')" class="px-2.5 py-1 text-xs rounded bg-red-950 hover:bg-red-900 text-red-300">
-                                Borrar
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }).join("");
         }
 
-        cargarKeys();
+        window.onload = cargarKeys;
     </script>
+</head>
+<body class="bg-gray-900 text-white min-p-6 font-sans">
+    <div class="max-w-md mx-auto mt-10 bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-700">
+        <h1 class="text-2xl font-bold text-center text-green-400 mb-6">PedroModz666 Panel</h1>
+        
+        <!-- Formulario para Crear Keys -->
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium mb-1">Key Personalizada (Opcional):</label>
+                <input type="text" id="customKey" placeholder="Ej: PEDRO-VIP-2026" class="w-full p-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-green-500">
+            </div>
+            
+            <div class="flex gap-2">
+                <div class="w-1/2">
+                    <label class="block text-sm font-medium mb-1">Duración (Días):</label>
+                    <input type="number" id="diasInput" value="1" min="1" class="w-full p-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-green-500">
+                </div>
+                <div class="w-1/2">
+                    <label class="block text-sm font-medium mb-1">Tipo de Licencia:</label>
+                    <select id="tipoLicencia" class="w-full p-2 rounded bg-gray-700 border border-gray-600 focus:outline-none focus:border-green-500">
+                        <option value="normal">Normal</option>
+                        <option value="vip">VIP</option>
+                    </select>
+                </div>
+            </div>
+
+            <button onclick="generarKey()" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold p-2 rounded transition">Generar Licencia</button>
+        </div>
+
+        <div id="resultado"></div>
+
+        <!-- Lista de Keys Activas -->
+        <div class="mt-8">
+            <h2 class="text-lg font-bold mb-3 border-b border-gray-700 pb-2">Licencias Generadas</h2>
+            <div id="listaKeys" class="max-h-60 overflow-y-auto">
+                <!-- Se cargan dinámicamente -->
+            </div>
+        </div>
+    </div>
 </body>
 </html>
