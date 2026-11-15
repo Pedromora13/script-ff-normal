@@ -1,348 +1,149 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Keys · PedroModz666</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-<style>
-:root{
-  --fondo:#0d0e0e;
-  --panel:#151717;
-  --linea:#262a2a;
-  --texto:#e8ecea;
-  --tenue:#8d9794;
-  --acento:#2fd6b8;
-  --alerta:#ff5d5d;
-  --ok:#2fd6b8;
-  --esp:8px;
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{
-  background:var(--fondo);color:var(--texto);
-  font-family:'Archivo',system-ui,sans-serif;
-  font-size:16px;line-height:1.5;
-  padding:calc(var(--esp)*3) calc(var(--esp)*2) 80px;
-  max-width:680px;margin:0 auto;
-}
-h1{font-size:1.55rem;font-weight:800;letter-spacing:-.02em}
-h2{font-size:.78rem;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--tenue);margin-bottom:calc(var(--esp)*1.5)}
-code,.mono{font-family:'JetBrains Mono',monospace}
-.cabecera{display:flex;justify-content:space-between;align-items:flex-start;gap:var(--esp);margin-bottom:calc(var(--esp)*3)}
-.cabecera p{font-size:.8rem;color:var(--tenue);margin-top:2px}
-#salir{background:none;border:1px solid var(--linea);color:var(--tenue);font-family:inherit;font-size:.75rem;padding:6px 12px;border-radius:999px;cursor:pointer}
-#salir:hover{color:var(--alerta);border-color:var(--alerta)}
-.panel{background:var(--panel);border:1px solid var(--linea);border-radius:14px;padding:calc(var(--esp)*2);margin-bottom:calc(var(--esp)*2)}
-label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--tenue);margin-bottom:6px}
-input,select{
-  width:100%;background:#0a0b0b;border:1px solid var(--linea);color:var(--texto);
-  font-family:'JetBrains Mono',monospace;font-size:.9rem;
-  padding:11px 13px;border-radius:9px;margin-bottom:calc(var(--esp)*1.5);
-}
-input:focus,select:focus{outline:none;border-color:var(--acento)}
-button{font-family:inherit;font-size:.9rem;font-weight:600;cursor:pointer;border-radius:9px;border:none}
-.principal{width:100%;background:var(--acento);color:#04211c;padding:13px}
-.principal:active{transform:scale(.99)}
-.fila{display:flex;gap:var(--esp);flex-wrap:wrap}
-.fila>*{flex:1 1 140px}
-.resumen{display:flex;gap:var(--esp);margin-bottom:calc(var(--esp)*2)}
-.resumen div{background:var(--panel);border:1px solid var(--linea);border-radius:12px;padding:calc(var(--esp)*1.5);flex:1}
-.resumen .num{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:700;color:var(--acento)}
-.resumen .et{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--tenue)}
-.key{
-  background:var(--panel);border:1px solid var(--linea);border-left:3px solid var(--acento);
-  border-radius:11px;padding:calc(var(--esp)*1.5);margin-bottom:var(--esp);
-  display:flex;justify-content:space-between;align-items:center;gap:var(--esp);
-}
-.key.off{border-left-color:#4a5250;opacity:.62}
-.key .n{font-family:'JetBrains Mono',monospace;font-size:.92rem;word-break:break-all}
-.key .d{font-size:.7rem;color:var(--tenue);margin-top:3px}
-.acciones{display:flex;gap:6px;flex-shrink:0}
-.acciones button{background:#0a0b0b;border:1px solid var(--linea);color:var(--tenue);padding:7px 10px;font-size:.72rem;border-radius:7px}
-.acciones button:hover{color:var(--texto);border-color:var(--acento)}
-.acciones .borrar:hover{color:var(--alerta);border-color:var(--alerta)}
-.vacio{text-align:center;color:var(--tenue);font-size:.85rem;padding:calc(var(--esp)*4) 0}
-#aviso{
-  position:fixed;left:50%;bottom:22px;transform:translate(-50%,20px);
-  background:#04211c;color:var(--acento);border:1px solid var(--acento);
-  font-size:.82rem;padding:10px 18px;border-radius:999px;
-  opacity:0;pointer-events:none;transition:.22s;max-width:92vw;
-}
-#aviso.mal{background:#2a0f0f;color:var(--alerta);border-color:var(--alerta)}
-#aviso.ver{opacity:1;transform:translate(-50%,0)}
-.oculto{display:none!important}
-.pista{font-size:.72rem;color:var(--tenue);margin-top:4px;line-height:1.45}
-.pista a{color:var(--acento)}
-@media(min-width:560px){
-  .key{flex-wrap:nowrap}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Keys - PedroModz666</title>
+    <style>
+        :root { --bg: #0a0a0a; --card: #141414; --accent: #e83434; --text: #f0f0f0; --text-d: #a8a8a8; --border: #2a2a2a; }
+        * {margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);padding:20px;min-height:100vh;}
+        h1{font-family:'Space Grothes',monospace;font-size:2.2rem;color:var(--accent);margin-bottom:20px;}
+        .container{max-width:900px;margin:0 auto;}
+        .card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:20px;}
+        .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:20px;}
+        input[type="text"],input[type="date"],select{width:100%;padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;}
+        button{padding:12px 24px;border:none;border-radius:6px;cursor:pointer;font-size:1rem;font-weight:600;transition:opacity 0.2s;}
+        button:hover{opacity:0.8;}
+        .btn-primary{background:var(--accent);color:#fff;}
+        .btn-danger{background:#dc2626;color:#fff;}
+        .btn-success{background:#2e7e32;color:#fff;}
+        table{width:100%;border-collapse:collapse;margin-top:20px;}
+        th,td{padding:12px;text-align:left;border-bottom:1px solid var(--border);}
+        th{color:var(--accent);font-weight:600;font-size:0.85rem;text-transform:uppercase;letter-spacing:0.5px;}
+        .status{padding:4px 8px;border-radius:4px;font-size:0.85rem;font-weight:600;}
+        .status.active{background:#2e7e32;color:#fff;}
+        .status.inactive{background:#666;color:#fff;}
+        .empty{text-align:center;color:var(--text-d);padding:40px;font-style:italic;}
+        .actions{display:flex;gap:8px;}
+    </style>
 </head>
 <body>
-
-<div class="cabecera">
-  <div>
-    <h1>Keys</h1>
-    <p id="quien" class="mono">sin sesión</p>
-  </div>
-  <button id="salir" class="oculto" onclick="salir()">Cerrar sesión</button>
-</div>
-
-<section id="login" class="panel">
-  <h2>Entrar</h2>
-  <label for="tok">Token de GitHub</label>
-  <input id="tok" type="password" placeholder="ghp_..." autocomplete="off" spellcheck="false">
-  <button class="principal" onclick="entrar()">Conectar con GitHub</button>
-  <p class="pista">Necesita permiso <code>repo</code> sobre <code>Pedromora13/script-ff-normal</code>. Se crea en <a href="https://github.com/settings/tokens" target="_blank" rel="noopener">github.com/settings/tokens</a>.</p>
-</section>
-
-<main id="app" class="oculto">
-  <div class="resumen">
-    <div><div class="num" id="nActivas">0</div><div class="et">activas</div></div>
-    <div><div class="num" id="nTotal">0</div><div class="et">en total</div></div>
-    <div><div class="num" id="nMaestra">—</div><div class="et">maestra</div></div>
-  </div>
-
-  <section class="panel">
-    <h2>Nueva key</h2>
-    <label for="nueva">Nombre</label>
-    <input id="nueva" placeholder="Caleb7" autocomplete="off" spellcheck="false">
-    <div class="fila">
-      <div>
-        <label for="vence">Vence (opcional)</label>
-        <input id="vence" type="date">
-      </div>
-      <div>
-        <label for="estado">Estado</label>
-        <select id="estado"><option value="active">activa</option><option value="inactive">inactiva</option></select>
-      </div>
+    <div class="container">
+        <h1>⚡️ Admin Keys</h1>
+        
+        <div class="card">
+            <h3 color="var(--accent)">❏ Crear nueva key</h3>
+            <div class="form-grid">
+                <input type="text" id="newkey" placeholder="Key uniqua" maxlength="32">
+                <input type="date" id="expires">
+                <select id="type">
+                    <option value="vip">VIP</option>
+                    <option value="normal">Normal</option>
+                </select>
+            </div>
+            <button class="btn-primary" onclick="createKey()">Crear key</button>
+        </div>
+        
+        <div class="card">
+            <h3 color="var(--accent)">📋 Keys activas</h3>
+            <table>
+                <thead>
+                    <tr><th>Key</th><th>Tipo</th><th>Expira</th><th>Estado</th><th>Acciones</th></tr>
+                </thead>
+                <tbody id="keyslist"></tbody>
+            </table>
+        </div>
     </div>
-    <button class="principal" onclick="crear()">Crear y guardar en keys.txt</button>
-  </section>
 
-  <h2>Registradas <span id="cargando" class="mono" style="text-transform:none;letter-spacing:0"></span></h2>
-  <div id="lista"></div>
-</main>
-
-<div id="aviso"></div>
-
-<script>
-const REPO = 'Pedromora13/script-ff-normal';
-const ARCHIVO = 'keys.txt';
-const MAESTRA = 'PedroModz666';
-
-let token = sessionStorage.getItem('tk') || '';
-let sha = '';
-let keys = [];
-
-const $ = id => document.getElementById(id);
-const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-
-function avisar(msg, mal) {
-  const a = $('aviso');
-  a.textContent = msg;
-  a.className = 'ver' + (mal ? ' mal' : '');
-  clearTimeout(a._t);
-  a._t = setTimeout(() => a.className = '', 3200);
-}
-
-async function gh(metodo, ruta, cuerpo) {
-  const opciones = {
-    method: metodo,
-    headers: {
-      'Authorization': 'token ' + token,
-      'Accept': 'application/vnd.github.v3+json',
-      'Content-Type': 'application/json'
-    }
-  };
-  if (cuerpo) opciones.body = JSON.stringify(cuerpo);
-  const r = await fetch('https://api.github.com' + ruta, opciones);
-  if (!r.ok) {
-    let detalle = 'HTTP ' + r.status;
-    try { detalle = (await r.json()).message || detalle; } catch (e) {}
-    if (r.status === 401) detalle = 'token inválido o vencido';
-    if (r.status === 404) detalle = 'no encontrado o sin permiso sobre el repo';
-    throw new Error(detalle);
-  }
-  return r.status === 204 ? null : r.json();
-}
-
-function aBase64(texto) {
-  const bytes = new TextEncoder().encode(texto);
-  let bin = '';
-  bytes.forEach(b => bin += String.fromCharCode(b));
-  return btoa(bin);
-}
-function deBase64(b64) {
-  const bin = atob(b64.replace(/\s/g, ''));
-  const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
-  return new TextDecoder().decode(bytes);
-}
-
-async function entrar() {
-  const t = $('tok').value.trim();
-  if (!t) return avisar('Pega el token primero', true);
-  token = t;
-  $('quien').textContent = 'conectando...';
-  try {
-    const u = await gh('GET', '/user');
-    $('quien').textContent = '@' + u.login;
-    sessionStorage.setItem('tk', token);
-    $('login').classList.add('oculto');
-    $('app').classList.remove('oculto');
-    $('salir').classList.remove('oculto');
-    await cargar();
-  } catch (e) {
-    token = '';
-    sessionStorage.removeItem('tk');
-    $('quien').textContent = 'sin sesión';
-    avisar('No entró: ' + e.message, true);
-  }
-}
-
-function salir() {
-  token = ''; sha = ''; keys = [];
-  sessionStorage.removeItem('tk');
-  $('tok').value = '';
-  $('app').classList.add('oculto');
-  $('login').classList.remove('oculto');
-  $('salir').classList.add('oculto');
-  $('quien').textContent = 'sin sesión';
-}
-
-function leer(texto) {
-  const limpio = texto.trim();
-  if (!limpio) return [];
-  try {
-    const dato = JSON.parse(limpio);
-    if (Array.isArray(dato)) {
-      return dato.map(o => typeof o === 'string'
-        ? { key: o, status: 'active', expires: null }
-        : { key: o.key, status: o.status || 'active', expires: o.expires || null });
-    }
-  } catch (e) {}
-  return limpio.split('\n').map(l => l.trim()).filter(l => l && l !== '[' && l !== ']')
-    .map(l => l.replace(/,$/, ''))
-    .map(l => {
-      try { const o = JSON.parse(l); return { key: o.key, status: o.status || 'active', expires: o.expires || null }; }
-      catch (e) { return { key: l.replace(/^"|"$/g, ''), status: 'active', expires: null }; }
-    });
-}
-
-function escribir() {
-  const lineas = keys.map(k =>
-    '{"key":"' + k.key.replace(/\\/g, '\\\\').replace(/"/g, '\\"') +
-    '","status":"' + (k.status || 'active') +
-    '","device":null,"expires":' + (k.expires ? '"' + k.expires + '"' : 'null') + '}'
-  );
-  return '[\n' + lineas.join(',\n') + '\n]\n';
-}
-
-async function cargar() {
-  $('cargando').textContent = 'cargando…';
-  try {
-    const f = await gh('GET', `/repos/${REPO}/contents/${ARCHIVO}`);
-    sha = f.sha;
-    keys = leer(deBase64(f.content));
-    pintar();
-  } catch (e) {
-    $('cargando').textContent = '';
-    avisar('No pude leer keys.txt: ' + e.message, true);
-  }
-}
-
-function pintar() {
-  $('cargando').textContent = '';
-  $('nTotal').textContent = keys.length;
-  $('nActivas').textContent = keys.filter(k => k.status === 'active').length;
-  $('nMaestra').textContent = keys.some(k => k.key === MAESTRA) ? 'sí' : 'falta';
-
-  const lista = $('lista');
-  if (!keys.length) {
-    lista.innerHTML = '<div class="vacio">Todavía no hay keys guardadas.</div>';
-    return;
-  }
-  lista.innerHTML = keys.map((k, i) => {
-    const activa = k.status === 'active';
-    const vence = k.expires ? ' · vence ' + esc(k.expires) : '';
-    return `<div class="key ${activa ? '' : 'off'}">
-      <div>
-        <div class="n">${esc(k.key)}</div>
-        <div class="d">${activa ? 'activa' : 'inactiva'}${vence}</div>
-      </div>
-      <div class="acciones">
-        <button onclick="alternar(${i})">${activa ? 'apagar' : 'activar'}</button>
-        <button onclick="renombrar(${i})">editar</button>
-        <button class="borrar" onclick="borrar(${i})">borrar</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-async function guardar(textoOk) {
-  try {
-    const r = await gh('PUT', `/repos/${REPO}/contents/${ARCHIVO}`, {
-      message: textoOk,
-      content: aBase64(escribir()),
-      sha: sha
-    });
-    sha = r.content.sha;
-    pintar();
-    avisar('Guardado en GitHub');
-  } catch (e) {
-    avisar('No se guardó: ' + e.message, true);
-    await cargar();
-  }
-}
-
-async function crear() {
-  const nombre = $('nueva').value.trim();
-  if (!nombre) return avisar('Escribe el nombre de la key', true);
-  if (/["\\\n]/.test(nombre)) return avisar('Sin comillas ni saltos de línea', true);
-  if (keys.some(k => k.key.toLowerCase() === nombre.toLowerCase())) return avisar('Esa key ya existe', true);
-  keys.push({ key: nombre, status: $('estado').value, expires: $('vence').value || null });
-  $('nueva').value = '';
-  $('vence').value = '';
-  await guardar('alta de key ' + nombre);
-  avisar('Key ' + nombre + ' creada');
-}
-
-async function alternar(i) {
-  keys[i].status = keys[i].status === 'active' ? 'inactive' : 'active';
-  pintar();
-  await guardar((keys[i].status === 'active' ? 'activo' : 'desactivo') + ' key ' + keys[i].key);
-}
-
-async function renombrar(i) {
-  const actual = keys[i].key;
-  const nuevo = prompt('Nombre de la key', actual);
-  if (nuevo === null) return;
-  const limpio = nuevo.trim();
-  if (!limpio || /["\\\n]/.test(limpio)) return avisar('Nombre no válido', true);
-  if (keys.some((k, j) => j !== i && k.key.toLowerCase() === limpio.toLowerCase())) return avisar('Ese nombre ya está usado', true);
-  const vence = prompt('Vence (AAAA-MM-DD, vacío = nunca)', keys[i].expires || '');
-  if (vence === null) return;
-  keys[i].key = limpio;
-  keys[i].expires = vence.trim() || null;
-  pintar();
-  await guardar('edito key ' + actual + ' → ' + limpio);
-}
-
-async function borrar(i) {
-  if (!confirm('¿Borrar la key ' + keys[i].key + '?')) return;
-  const quitada = keys[i].key;
-  keys.splice(i, 1);
-  pintar();
-  await guardar('borro key ' + quitada);
-  avisar('Key ' + quitada + ' borrada');
-}
-
-if (token) {
-  $('tok').value = token;
-  entrar();
-}
-</script>
+    <script>
+        const REPO_URL = 'https://raw.githubusercontent.com/Pedromora13/script-ff-normal/main/keys.json';
+        
+        let keysData = [];
+        
+        async function loadKeys() {
+            try {
+                const r = await fetch(REPO_URL + '?v=' + Date.now());
+                keysData = await r.json();
+                renderKeys();
+            } catch(e) {
+                document.getElementById('keyslist').innerHTML = '<tr><td colspan="5" class="empty">Error cargando keys</td></tr>';
+            }
+        }
+        
+        function renderKeys() {
+            const tbl = document.getElementById('keyslist');
+            if (!keysData.length) {
+                tbl.innerHTML = '<tr><td colspan="5" class="empty">No hay keys registradas</td></tr>';
+                return;
+            }
+            tbl.innerHTML = keysData.map(k => {
+                const isActive = k.status === 'active';
+                const expDays = k.expires ? Math.ceil((new Date(k.expires) - new Date()) / (864e5)) : null;
+                const expText = k.expires ? (isActive && expDays < 0 ? `<span style="color:#dc2626">${expDays}días</span>` : `${expDays}días | ${k.expires}`) : 'Sin' expiración';
+                return `
+                    <tr>
+                        <td><code>${k.key}</code></td>
+                        <td>${k.type || 'VIP'}</td>
+                        <td>${expText}</td>
+                        <td><span class="status ${isActive ? 'active' : 'inactive'}">${isActive ? 'activa' : 'inactive'}</span></td>
+                        <td class="actions">
+                            <button class="btn-success" onclick="toggleStatus('${k.key}')">${isActive ? 'Desactivar' : 'Activar'}</button>
+                            <button class="btn-danger" onclick="deleteKey('${k.key}')">Eliminar</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        async function createKey() {
+            const key = document.getElementById('newKey').value.trim();
+            const expires = document.getElementById('expires').value;
+            const type = document.getElementById('type').value;
+            
+            if (!key) {
+                alert('Ingresa una key');
+                return;
+            }
+            
+            if (keysData.some(k => k.key === key)) {
+                alert('Existe una key con ese nombre');
+                return;
+            }
+            
+            keysData.push({
+                key: key,
+                status: 'active',
+                expires: expires || null,
+                device: null,
+                type: type
+            });
+            
+            await saveKeys();
+            loadKeys();
+            document.getElementById('newkey').value = '';
+            document.getElementById('expires').value = '';
+        }
+        
+        async function toggleStatus(key) {
+            const k = keysData.find(k => k.key === key);
+            if (k) k.status = k.status === 'active' ? 'inactive' : 'active';
+            await saveKeys();
+            loadKeys();
+        }
+        
+        async function deleteKey(key) {
+            if (!confirm(`Tenes certeza de eliminar la key ${key}?`)) return;
+            keysData = keysData.filter(k => k.key !== key);
+            await saveKeys();
+            loadKeys();
+        }
+        
+        async function saveKeys() {
+            alert('Función de guardar: necesitas un backend. Las keys se guardan en memoria solo para esta sesión.');
+        }
+        
+        loadKeys();
+    </script>
 </body>
 </html>
