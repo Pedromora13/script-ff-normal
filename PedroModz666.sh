@@ -1,11 +1,8 @@
 #!/system/bin/sh
 
-# --- CONFIGURACIÓN DE ACTUALIZACIÓN Y FIREBASE ---
-VERSION_ACTUAL="1.3.1"
-URL_VERSION="https://raw.githubusercontent.com/Pedromora13/PedroModz666/main/version.txt"
-URL_SCRIPT="https://raw.githubusercontent.com/Pedromora13/PedroModz666/main/PedroModz666.sh"
+# --- CONFIGURACIÓN DE FIREBASE ---
 URL_FIREBASE="https://pedromodz-keys-default-rtdb.firebaseio.com/keys"
-# -------------------------------------------------
+# ---------------------------------
 
 enviar_web() {
     local url="$1"
@@ -65,34 +62,6 @@ enviar_web() {
         return 0
     fi
 }
-
-verificar_actualizacion() {
-    VERSION_REMOTA=$(enviar_web "$URL_VERSION?v=$(date +%s)" "" | tr -d '\r' | tr -d '\n' | xargs)
-    
-    if [ -n "$VERSION_REMOTA" ] && [ "$VERSION_ACTUAL" != "$VERSION_REMOTA" ]; then
-        printf "\n\033[1;31m¡Nueva actualización disponible ($VERSION_REMOTA)!\033[0m\n"
-        printf "¿Deseas actualizar ahora? (s/n): "
-        read respuesta
-        if [ "$respuesta" = "s" ] || [ "$respuesta" = "S" ]; then
-            printf "Actualizando script...\n"
-            if command -v curl >/dev/null 2>&1; then
-                curl -s -o "$0" "$URL_SCRIPT"
-            elif command -v wget >/dev/null 2>&1; then
-                wget -q -O "$0" "$URL_SCRIPT"
-            else
-                busybox wget -q -O "$0" "$URL_SCRIPT"
-            fi
-            chmod +x "$0"
-            printf "\033[1;32m¡Actualización completada! Vuelve a abrir el script.\033[0m\n\n"
-            exit 0
-        else
-            printf "\n\033[1;31m[!] Debes actualizar el script. Saliendo...\033[0m\n\n"
-            exit 0
-        fi
-    fi
-}
-
-verificar_actualizacion
 
 # --- CONFIGURACIÓN DE TELEGRAM ---
 TOKEN_BOT="8683483962:AAGHLpFhkenCuKPbo_jDSlHP5RtomhR3L4Y"
