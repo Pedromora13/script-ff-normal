@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PedroModz666 Admin</title>
+    <!-- SDK Oficial de PayPal -->
+    <script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
     <style>
         :root { --bg: #0a0a0a; --card: #141414; --accent: #e83434; --text: #f0f0f0; --text-d: #a8a8a8; --border: #2a2a2a; }
         * {margin:0;padding:0;box-sizing:border-box;}
@@ -30,18 +32,19 @@
         .admin-toggle { text-align: right; margin-bottom: 15px; }
         .admin-toggle a { color: var(--text-d); font-size: 0.85rem; text-decoration: underline; cursor: pointer; }
         .admin-toggle a:hover { color: var(--accent); }
+        #paypal-button-container { margin-top: 20px; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>⚡️ PedroModz666 Admin</h1>
 
-        <!-- BOTÓN DISCRETO PARA ACCEDER COMO ADMIN -->
+        <!-- ACCESO ADMIN -->
         <div class="admin-toggle">
             <a onclick="mostrarLoginAdmin()">🔐 Acceso Administrador (Tú)</a>
         </div>
 
-        <!-- MODAL / VISTA LOGIN ADMIN -->
+        <!-- MODAL LOGIN ADMIN -->
         <div id="loginAdminModal" class="card hidden" style="border-color: var(--accent);">
             <h3 style="color:var(--accent); margin-bottom:15px;">🔒 Ingresar Key de Administrador</h3>
             <div style="margin-bottom: 15px;">
@@ -53,39 +56,41 @@
             </div>
         </div>
 
-        <!-- PORTAL DE CLIENTES (VISTA INICIAL) -->
+        <!-- PORTAL DE CLIENTES CON PAGO REAL DE PAYPAL -->
         <div id="portalCliente" class="card">
             <h3 style="color:var(--accent); margin-bottom:15px;">💎 Adquiere tu Membresía VIP / Normal</h3>
             <div class="instruction-box">
-                <b>Paso 1:</b> Realiza el pago vía PayPal al correo: <code style="color:var(--accent);">principal06182@gmail.com</code><br>
-                <b>Paso 2:</b> Selecciona el plan deseado (según los precios oficiales) y pega tu <b>ID de Transacción de PayPal</b>.<br>
-                <b>Paso 3:</b> Haz clic en verificar y el sistema generará tu Key aleatoria al instante para usarla en Termux.
+                <b>Paso 1:</b> Selecciona el tipo de licencia y el plan que deseas adquirir.<br>
+                <b>Paso 2:</b> Realiza el pago seguro haciendo clic en el botón oficial de PayPal.<br>
+                <b>Paso 3:</b> Una vez aprobado el pago, el sistema validará la transacción y generará tu Key aleatoria automáticamente.
             </div>
             
             <div class="form-grid" style="margin-bottom:15px;">
                 <div>
                     <label style="display:block; margin-bottom:5px; font-size:0.9rem;">Tipo de Licencia:</label>
-                    <select id="clientType">
+                    <select id="clientType" onchange="actualizarPrecio()">
                         <option value="vip">VIP (Acceso Total)</option>
                         <option value="normal">Normal (Bypass)</option>
                     </select>
                 </div>
                 <div>
                     <label style="display:block; margin-bottom:5px; font-size:0.9rem;">Selecciona tu Plan:</label>
-                    <select id="clientPlan">
-                        <option value="1">1 Día - $3 USD</option>
-                        <option value="30">30 Días - $15 USD</option>
-                        <option value="60">60 Días - $25 USD</option>
-                        <option value="perm">Permanente - $150 USD</option>
+                    <select id="clientPlan" onchange="actualizarPrecio()">
+                        <option value="1" data-price="3.00">1 Día - $3 USD</option>
+                        <option value="30" data-price="15.00">30 Días - $15 USD</option>
+                        <option value="60" data-price="25.00">60 Días - $25 USD</option>
+                        <option value="perm" data-price="150.00">Permanente - $150 USD</option>
                     </select>
                 </div>
             </div>
 
-            <div style="margin-bottom: 15px;">
-                <input type="text" id="txIdInput" placeholder="Ej: 4X589213AB789123J (ID de Transacción PayPal)" />
+            <div style="text-align: center; margin-bottom: 15px;">
+                <span style="font-size: 1.2rem; font-weight: bold; color: var(--text-d);">Total a pagar: <span id="precioTotal" style="color: var(--accent);">$3.00 USD</span></span>
             </div>
-            
-            <button class="btn-success" onclick="comprarYGenerarKey()">Verificar Pago y Obtener Key</button>
+
+            <!-- CONTENEDOR DEL BOTÓN OFICIAL DE PAYPAL -->
+            <div id="paypal-button-container"></div>
+
             <div id="clientResult" style="margin-top:15px;"></div>
         </div>
 
@@ -119,173 +124,73 @@
 
     <script>
         const FIREBASE_URL = 'https://pedromodz-keys-default-rtdb.firebaseio.com/keys';
-        
-        // CONTRASEÑA MAESTRA DE ADMIN
         const MI_KEY_ADMIN = "PEDRO-MASTER-SECRET-2026"; 
-        
         let keysData = {};
 
-        function mostrarLoginAdmin() {
-            document.getElementById('loginAdminModal').classList.remove('hidden');
+        function actualizarPrecio() {
+            const selectPlan = document.getElementById('clientPlan');
+            const precio = selectPlan.options[selectPlan.selectedIndex].getAttribute('data-price');
+            document.getElementById('precioTotal').innerText = `$${precio} USD`;
         }
 
-        function cerrarLoginAdmin() {
-            document.getElementById('loginAdminModal').classList.add('hidden');
-            document.getElementById('admKeyInput').value = '';
-        }
-
+        function mostrarLoginAdmin() { document.getElementById('loginAdminModal').classList.remove('hidden'); }
+        function cerrarLoginAdmin() { document.getElementById('loginAdminModal').classList.add('hidden'); document.getElementById('admKeyInput').value = ''; }
         function verificarAdmin() {
-            const ingresada = document.getElementById('admKeyInput').value.trim();
-            if (ingresada === MI_KEY_ADMIN) {
+            if (document.getElementById('admKeyInput').value.trim() === MI_KEY_ADMIN) {
                 cerrarLoginAdmin();
                 document.getElementById('portalCliente').classList.add('hidden');
                 document.getElementById('panelAdmin').classList.remove('hidden');
                 loadKeys();
-            } else {
-                alert('Key de Administrador incorrecta.');
-            }
+            } else { alert('Key de Administrador incorrecta.'); }
         }
-
-        function cerrarAdmin() {
-            document.getElementById('panelAdmin').classList.add('hidden');
-            document.getElementById('portalCliente').classList.remove('hidden');
-        }
+        function cerrarAdmin() { document.getElementById('panelAdmin').classList.add('hidden'); document.getElementById('portalCliente').classList.remove('hidden'); }
         
         async function loadKeys() {
             try {
                 const r = await fetch(FIREBASE_URL + '.json?v=' + Date.now());
                 keysData = await r.json() || {};
                 renderKeys();
-            } catch(e) {
-                document.getElementById('keyslist').innerHTML = '<tr><td colspan="5" class="empty">Error cargando keys de Firebase</td></tr>';
-            }
+            } catch(e) { document.getElementById('keyslist').innerHTML = '<tr><td colspan="5" class="empty">Error cargando keys</td></tr>'; }
         }
         
         function renderKeys() {
             const tbl = document.getElementById('keyslist');
             const keysArray = Object.keys(keysData);
-            
-            if (!keysArray.length) {
-                tbl.innerHTML = '<tr><td colspan="5" class="empty">No hay keys registradas</td></tr>';
-                return;
-            }
-            
+            if (!keysArray.length) { tbl.innerHTML = '<tr><td colspan="5" class="empty">No hay keys registradas</td></tr>'; return; }
             tbl.innerHTML = keysArray.map(k => {
                 const item = keysData[k];
                 const isActive = item.status === 'active';
-                let expText = item.expires || 'Permanente';
-                const tipoRango = (item.type || 'normal').toUpperCase();
-                const badgeColor = item.type === 'vip' ? 'background:#eab308;color:#000;' : 'background:#3b82f6;color:#fff;';
-
-                return `
-                    <tr>
-                        <td><code>${k}</code></td>
-                        <td><span style="padding:3px 8px;border-radius:4px;font-size:0.75rem;font-weight:bold;${badgeColor}">${tipoRango}</span></td>
-                        <td>${expText}</td>
-                        <td><span class="status ${isActive ? 'active' : 'inactive'}">${isActive ? 'activa' : 'inactiva'}</span></td>
-                        <td>
-                            <button class="btn-success" style="padding:6px 10px;font-size:0.8rem;margin-bottom:4px;" onclick="toggleStatus('${k}')">${isActive ? 'Desactivar' : 'Activar'}</button>
-                            <button class="btn-danger" style="padding:6px 10px;font-size:0.8rem;" onclick="deleteKey('${k}')">Eliminar</button>
-                        </td>
-                    </tr>
-                `;
+                return `<tr>
+                    <td><code>${k}</code></td>
+                    <td><span style="padding:3px 8px;border-radius:4px;font-size:0.75rem;font-weight:bold;${item.type==='vip'?'background:#eab308;color:#000;':'background:#3b82f6;color:#fff;'}">${(item.type||'normal').toUpperCase()}</span></td>
+                    <td>${item.expires || 'Permanente'}</td>
+                    <td><span class="status ${isActive ? 'active' : 'inactive'}">${isActive ? 'activa' : 'inactiva'}</span></td>
+                    <td>
+                        <button class="btn-success" style="padding:6px 10px;font-size:0.8rem;margin-bottom:4px;" onclick="toggleStatus('${k}')">${isActive ? 'Desactivar' : 'Activar'}</button>
+                        <button class="btn-danger" style="padding:6px 10px;font-size:0.8rem;" onclick="deleteKey('${k}')">Eliminar</button>
+                    </td>
+                </tr>`;
             }).join('');
         }
         
         async function createKey() {
             const keyInput = document.getElementById('newkey').value.trim();
-            const expiresInput = document.getElementById('expires').value;
-            const typeInput = document.getElementById('type').value;
-            
-            if (!keyInput) {
-                alert('Ingresa una key válida');
-                return;
-            }
-            
-            const nuevaKeyData = {
-                status: 'active',
-                expires: expiresInput || null,
-                type: typeInput,
-                created: Math.floor(Date.now() / 1000)
-            };
-            
+            if (!keyInput) { alert('Ingresa una key válida'); return; }
             await fetch(`${FIREBASE_URL}/${keyInput}.json`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(nuevaKeyData)
+                body: JSON.stringify({ status: 'active', expires: document.getElementById('expires').value || null, type: document.getElementById('type').value, created: Math.floor(Date.now() / 1000) })
             });
-
             document.getElementById('newkey').value = '';
-            document.getElementById('expires').value = '';
             loadKeys();
         }
 
-        async function comprarYGenerarKey() {
-            const txId = document.getElementById('txIdInput').value.trim();
-            const tipo = document.getElementById('clientType').value.toUpperCase();
-            const planSeleccionado = document.getElementById('clientPlan').value;
-            const resDiv = document.getElementById('clientResult');
-
-            if (!txId || txId.length < 5) {
-                resDiv.innerHTML = `<div style="background:#dc2626; color:#fff; padding:10px; border-radius:6px;">Por favor ingresa un ID de transacción de PayPal válido.</div>`;
-                return;
-            }
-
-            const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
-            const generatedKey = `PM-${tipo}-${randomCode}`;
-
-            let fechaStr = null;
-            let etiquetaDuracion = "Permanente";
-
-            if (planSeleccionado !== "perm") {
-                const dias = parseInt(planSeleccionado);
-                const fechaExp = new Date();
-                fechaExp.setDate(fechaExp.getDate() + dias);
-                fechaStr = fechaExp.toISOString().split('T')[0];
-                etiquetaDuracion = `${dias} Días`;
-            }
-
-            const clientKeyData = {
-                status: 'active',
-                expires: fechaStr,
-                type: tipo.toLowerCase(),
-                paypal_tx: txId,
-                created: Math.floor(Date.now() / 1000)
-            };
-
-            try {
-                resDiv.innerHTML = `<div style="color:var(--text-d); padding:10px;">Verificando ID de pago y generando licencia...</div>`;
-                
-                await fetch(`${FIREBASE_URL}/${generatedKey}.json`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(clientKeyData)
-                });
-
-                resDiv.innerHTML = `
-                    <div style="background:#2e7e32; color:#fff; padding:15px; border-radius:6px; margin-top:10px;">
-                        <b>¡Pago verificado con éxito! Aquí tienes tu Key generada:</b><br>
-                        <input type="text" value="${generatedKey}" readonly style="background:#111; color:#22c55e; font-weight:bold; text-align:center; margin-top:8px; font-size:1.1rem;" onclick="this.select();">
-                        <small style="display:block; margin-top:5px;">Cópiala y úsala en tu Termux. Duración: ${etiquetaDuracion} (${tipo}).</small>
-                    </div>
-                `;
-                document.getElementById('txIdInput').value = '';
-            } catch (e) {
-                resDiv.innerHTML = `<div style="background:#dc2626; color:#fff; padding:10px; border-radius:6px;">Error procesando la solicitud con Firebase.</div>`;
-            }
-        }
-        
         async function toggleStatus(key) {
             const r = await fetch(`${FIREBASE_URL}/${key}.json`);
             const item = await r.json();
             if (!item) return;
-            
             item.status = item.status === 'active' ? 'inactive' : 'active';
-            await fetch(`${FIREBASE_URL}/${key}.json`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(item)
-            });
+            await fetch(`${FIREBASE_URL}/${key}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(item) });
             loadKeys();
         }
         
@@ -294,6 +199,73 @@
             await fetch(`${FIREBASE_URL}/${key}.json`, { method: 'DELETE' });
             loadKeys();
         }
+
+        // RENDERIZAR BOTÓN OFICIAL DE PAYPAL
+        paypal.Buttons({
+            createOrder: function(data, actions) {
+                const selectPlan = document.getElementById('clientPlan');
+                const precio = selectPlan.options[selectPlan.selectedIndex].getAttribute('data-price');
+                const tipo = document.getElementById('clientType').value.toUpperCase();
+                
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: { value: precio },
+                        description: `Membresía PedroModz666 - ${tipo}`
+                    }]
+                });
+            },
+            onApprove: function(data, actions) {
+                return actions.order.capture().then(async function(details) {
+                    const tipo = document.getElementById('clientType').value.toUpperCase();
+                    const planSeleccionado = document.getElementById('clientPlan').value;
+                    const resDiv = document.getElementById('clientResult');
+
+                    const randomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+                    const generatedKey = `PM-${tipo}-${randomCode}`;
+
+                    let fechaStr = null;
+                    let etiquetaDuracion = "Permanente";
+
+                    if (planSeleccionado !== "perm") {
+                        const dias = parseInt(planSeleccionado);
+                        const fechaExp = new Date();
+                        fechaExp.setDate(fechaExp.getDate() + dias);
+                        fechaStr = fechaExp.toISOString().split('T')[0];
+                        etiquetaDuracion = `${dias} Días`;
+                    }
+
+                    const clientKeyData = {
+                        status: 'active',
+                        expires: fechaStr,
+                        type: tipo.toLowerCase(),
+                        paypal_tx: details.id,
+                        buyer: details.payer.email_address,
+                        created: Math.floor(Date.now() / 1000)
+                    };
+
+                    try {
+                        await fetch(`${FIREBASE_URL}/${generatedKey}.json`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(clientKeyData)
+                        });
+
+                        resDiv.innerHTML = `
+                            <div style="background:#2e7e32; color:#fff; padding:15px; border-radius:6px; margin-top:10px;">
+                                <b>¡Pago exitoso, ${details.payer.name.given_name}! Aquí tienes tu Key:</b><br>
+                                <input type="text" value="${generatedKey}" readonly style="background:#111; color:#22c55e; font-weight:bold; text-align:center; margin-top:8px; font-size:1.1rem;" onclick="this.select();">
+                                <small style="display:block; margin-top:5px;">Cópiala y úsala en Termux. Plan: ${etiquetaDuracion} (${tipo}).</small>
+                            </div>
+                        `;
+                    } catch (e) {
+                        resDiv.innerHTML = `<div style="background:#dc2626; color:#fff; padding:10px; border-radius:6px;">Pago aprobado pero ocurrió un error al guardar la key en Firebase. Contáctame.</div>`;
+                    }
+                });
+            },
+            onError: function(err) {
+                document.getElementById('clientResult').innerHTML = `<div style="background:#dc2626; color:#fff; padding:10px; border-radius:6px;">El pago no se pudo completar o fue cancelado.</div>`;
+            }
+        }).render('#paypal-button-container');
     </script>
 </body>
 </html>
